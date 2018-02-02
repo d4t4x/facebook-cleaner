@@ -4,7 +4,7 @@ Try it right now: [Install it from Chrome or Firefox]
 
 *Privacy on Facebook.*
 
-A browser extension that cleans out a Facebook user's ad preferences, categories, and likes on a periodic basis. It runs quietly in the background while you use Facebook and runs locally, so no information about you is stored or shared.
+A browser extension that cleans out a Facebook user's ad preferences, categories, and likes on a periodic basis.
 
 Built for both Chrome & Firefox.
 
