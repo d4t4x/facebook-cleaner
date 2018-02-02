@@ -1,8 +1,8 @@
 # Facebook Privacy Cleaner
 
-Try it right now: [Install it from Chrome or Firefox]
+*A work in progress*
 
-*Privacy on Facebook.*
+Try it right now: [Install it from Chrome or Firefox]
 
 A browser extension that cleans out a Facebook user's ad preferences, categories, and likes on a periodic basis.
 
