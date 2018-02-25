@@ -37,6 +37,10 @@ h1 {
   text-align: center;
 }
 
+.run {
+  text-align: center;
+}
+
 a:link, a:visited {
     background-color: #eee;
     color: gray;
