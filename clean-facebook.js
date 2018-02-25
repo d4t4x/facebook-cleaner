@@ -1,20 +1,19 @@
-// var likes = document.getElementsByClassName("._2b2p");
-// document.getElementsByTagName("button").getAttribute("title");
-// likes = document.querySelectorAll("[title='Remove']")
-
 var DEBUG = false;
 
 // First section - interests
 function cleanFacebookInterests(){
-    // Click each tab
-    tabs = $("._4xjz");
-    for (i = 0; i < tabs.length; i++) {
-      tabs[i].click();
-    // Click each like
-      likes = $("._2b2n");
-      for (y = 0; y < likes.length; y++) {
-        likes[y].click();
-      }
+  // Open the section
+  sections = $("._2qo6");
+  sections[0].click();
+  // Click each tab
+  tabs = $("._4xjz");
+  for (i = 0; i < tabs.length; i++) {
+    tabs[i].click();
+  // Click each like
+    likes = $("._2b2n");
+    for (y = 0; y < likes.length; y++) {
+      likes[y].click();
+    }
     };
     // Close the section
     sections = $("._2qo6");
@@ -38,8 +37,6 @@ function cleanFacebookAds(){
       adverts[g].click();
     }
   };
-  // TODO: fix the 'more tabs'
-  // more_tabs = $("._1b0");
   // Close the section
   sections[1].click();
 };
@@ -67,14 +64,26 @@ function cleanFacebookCategories(){
   sections[2].click();
 };
 
-function startCleaning(){
-  setTimeout(cleanFacebookInterests, 5000);
-  setTimeout(cleanFacebookAds, 10000);
-  setTimeout(cleanFacebookCategories, 10000);
+function startCleaning() {
+  // Check if box 1 is checked
+  chrome.storage.sync.get('clean-1', function(data){
+      if (data['clean-1'] == true){
+        setTimeout(cleanFacebookInterests, 5000);
+      }
+  });
+  // Check if box 2 is checked
+  chrome.storage.sync.get('clean-2', function(data){
+      if (data['clean-2'] == true){
+        setTimeout(cleanFacebookAds, 10000);
+      }
+  });
+  // Check if box 3 is checked
+  chrome.storage.sync.get('clean-3', function(data){
+      if (data['clean-3'] == true){
+        setTimeout(cleanFacebookCategories, 10000);
+      }
+  });
 
 };
 
 startCleaning();
-
-// var scroller = _.debounce(startCleaning, 300);
-// document.addEventListener("scroll", scroller);

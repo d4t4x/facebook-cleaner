@@ -2,24 +2,18 @@
 
 *A work in progress*
 
-Try it right now: [Install it from Chrome or Firefox]
-
 A browser extension that cleans out a Facebook user's ad preferences, categories, and likes on a periodic basis.
 
 Built for both Chrome & Firefox.
 
-## How it Works
-
-[Post screenshots, videos]
+Try it right now: [Install it from Chrome or Firefox]
 
 ## Installing the Extension
 
 Option #1: From Chrome
-
 [Click here and choose "+ Add to Chrome"]
 
 Option #2: From Firefox
-
 [Click here and choose "+ Add to Firefox"]
 
 Option #3: From this repo (for Chrome)
@@ -30,3 +24,5 @@ Option #3: From this repo (for Chrome)
 * Click on the button labelled `Load unpacked extension...`
 * Select the directory where you cloned this repo
 * Go to Facebook.
+
+### License

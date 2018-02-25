@@ -10,11 +10,12 @@
     "tabs"
   ],
   "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "Facebook Ad Cleaner",
     "default_icon": {
       "19": "media/16.png",
       "38": "media/48.png"
-    },
-    "default_popup": "popup.html"
+    }
   },
   "icons": {
     "128": "media/128.png",
@@ -23,7 +24,6 @@
   },
   "content_scripts": [{
       "matches": ["https://*.facebook.com/ads/preferences/*", "http://*.facebook.com/ads/preferences/*"],
-      "js": ["libs/underscore.min.js", "libs/jquery.js", "clean-facebook.js"]
-    }
-  ]
+      "js": ["libs/jquery.js", "clean-facebook.js"]
+    }]
 }
