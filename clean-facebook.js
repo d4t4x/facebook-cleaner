@@ -2,9 +2,8 @@ var DEBUG = false;
 
 // First section - interests
 function cleanFacebookInterests(){
-  // Open the section
+  console.log("cleaning facebook interests");
   sections = $("._2qo6");
-  sections[0].click();
   // Click each tab
   tabs = $("._4xjz");
   for (i = 0; i < tabs.length; i++) {
@@ -12,18 +11,24 @@ function cleanFacebookInterests(){
   // Click each like
     likes = $("._2b2n");
     for (y = 0; y < likes.length; y++) {
-      likes[y].click();
+      try {
+        likes[y].click();
+      } catch (e) {
+        console.log("Error");
+      }
     }
-    };
+  };
     // Close the section
-    sections = $("._2qo6");
     sections[0].click();
 };
 
 // Second section - advertisers you've interacted with
 function cleanFacebookAds(){
-  // Open the section
+  console.log("cleaning facebook ads");
   sections = $("._2qo6");
+  // Close the first section
+  sections[0].click();
+  // Open the second section
   sections[1].scrollIntoView();
   sections[1].click();
 
@@ -34,7 +39,11 @@ function cleanFacebookAds(){
   // Click each advert
     adverts = $("._2b2n");
     for (g = 0; g < adverts.length; g++) {
-      adverts[g].click();
+      try {
+        adverts[g].click();
+      } catch (e) {
+        console.log("Error");
+      }
     }
   };
   // Close the section
@@ -43,22 +52,30 @@ function cleanFacebookAds(){
 
 // Third section - categories
 function cleanFacebookCategories(){
-  // Open the section
+  console.log("cleaning user categories");
   sections = $("._2qo6");
+  // Close the first section
+  sections[0].click();
+  // Open the third section
   sections[2].scrollIntoView();
   sections[2].click();
+  console.log("clicked section");
   // Click each tab
   tabs = $("._4jq5");
   tabs[1].click();
+  console.log("clicked tab");
   // Click each category
   categories = $(".sx_40ddf0");
   categories.css('position', 'relative');
   categories.css('z-index', 1);
   categories.attr("style", "visibility: visible");
-  // console.log(categories);
   for (z = 0; z < categories.length; z++) {
-    console.log(categories[z]);
-    categories[z].click();
+    try {
+      categories[z].click();
+      console.log("clicked category");
+    } catch (e) {
+      console.log("Error");
+    }
   };
   // Close the section
   sections[2].click();
