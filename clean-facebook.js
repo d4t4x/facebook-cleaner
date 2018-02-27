@@ -18,26 +18,48 @@ function cleanFacebookInterests(){
       }
     }
   };
-    // Close the section
-    sections[0].click();
+  // Click the 'More' tab
+  var more = $("._1b0");
+  more.click();
+  console.log("clicked more");
+  // click the more tabs
+  var more_tabs = $("._54nh");
+  for (l = 0; l < (more_tabs.length-1); l++) {
+    more_tabs[l].click();
+    console.log("clicked more tabs");
+    // Click each advert
+    var likes = $("._2b2n");
+    for (r = 0; r < likes.length; r++) {
+      try {
+        likes[r].click();
+        console.log("clicked advertisers");
+      } catch (e) {
+        console.log("Error");
+      }
+    }
+  };
+    // // Close the section
+    // close_sections = $("._2qo9");
+    // close_sections[0].click();
 };
 
 // Second section - advertisers you've interacted with
 function cleanFacebookAds(){
   console.log("cleaning facebook ads");
-  sections = $("._2qo6");
+  var sections = $("._2qo6");
   // Close the first section
-  sections[0].click();
+  var close_sections = $("._2qo9");
+  close_sections[0].click();
   // Open the second section
   sections[1].scrollIntoView();
   sections[1].click();
 
-  tabs = $("._4jq5");
+  var tabs = $("._4jq5");
   // Click each tab
   for (f = 0; f < tabs.length; f++) {
     tabs[f].click();
   // Click each advert
-    adverts = $("._2b2n");
+    var adverts = $("._2b2n");
     for (g = 0; g < adverts.length; g++) {
       try {
         adverts[g].click();
@@ -46,14 +68,37 @@ function cleanFacebookAds(){
       }
     }
   };
-  // Close the section
-  sections[1].click();
+  // Click the 'More' tab
+  var more = $("._1b0");
+  more.click();
+  console.log("clicked more");
+  // click the more categories
+  var more_tabs = $("._54nh");
+  for (n = 0; n < (more_tabs.length-1); n++) {
+    more_tabs[n].click();
+    console.log("clicked more tabs");
+    // Click each advert
+    var adverts = $("._2b2n");
+    for (g = 0; g < adverts.length; g++) {
+      try {
+        adverts[g].click();
+        console.log("clicked advertisers");
+      } catch (e) {
+        console.log("Error");
+      }
+    }
+  };
+  // // Close the section
+  // sections[1].click();
 };
 
 // Third section - categories
 function cleanFacebookCategories(){
   console.log("cleaning user categories");
-  sections = $("._2qo6");
+  var sections = $("._2qoe");
+  sections.css('position', 'relative');
+  sections.css('z-index', 1);
+  sections.attr("style", "visibility: visible");
   // Close the first section
   sections[0].click();
   // Open the third section
@@ -61,41 +106,37 @@ function cleanFacebookCategories(){
   sections[2].click();
   console.log("clicked section");
   // Click each tab
-  tabs = $("._4jq5");
+  var tabs = $("._4jq5");
   tabs[1].click();
   console.log("clicked tab");
   // Click each category
-  categories = $(".sx_40ddf0");
+  var categories = $(".sp_ZetlE9Uhzgq_2x");
   categories.css('position', 'relative');
   categories.css('z-index', 1);
   categories.attr("style", "visibility: visible");
   for (z = 0; z < categories.length; z++) {
-    try {
       categories[z].click();
       console.log("clicked category");
-    } catch (e) {
-      console.log("Error");
-    }
   };
-  // Close the section
-  sections[2].click();
+  // // Close the section
+  // sections[2].click();
 };
 
 function startCleaning() {
   // Check if box 1 is checked
-  chrome.storage.sync.get('clean-1', function(data){
+  chrome.storage.local.get('clean-1', function(data){
       if (data['clean-1'] == true){
         setTimeout(cleanFacebookInterests, 5000);
       }
   });
   // Check if box 2 is checked
-  chrome.storage.sync.get('clean-2', function(data){
+  chrome.storage.local.get('clean-2', function(data){
       if (data['clean-2'] == true){
         setTimeout(cleanFacebookAds, 10000);
       }
   });
   // Check if box 3 is checked
-  chrome.storage.sync.get('clean-3', function(data){
+  chrome.storage.local.get('clean-3', function(data){
       if (data['clean-3'] == true){
         setTimeout(cleanFacebookCategories, 10000);
       }
