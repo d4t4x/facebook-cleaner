@@ -24,6 +24,7 @@
   },
   "content_scripts": [{
       "matches": ["https://*.facebook.com/ads/preferences/*", "http://*.facebook.com/ads/preferences/*"],
-      "js": ["libs/jquery.js", "clean-facebook.js"]
+      "js": ["libs/jquery.js", "clean-facebook.js"],
+      "css": ["styles/ads-overlay.css"]
     }]
 }
