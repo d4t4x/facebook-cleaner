@@ -1,66 +1,67 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
-#ads-overlay {
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding: 20px;
-    width: 50%;
-    height: 190px;
-    background: linear-gradient(#fc177e, #fd6c6b);
-    color: #FFFFFF;
-    font-size: 1.2em;
-    opacity: 0.9;
-    font-family: 'Roboto', sans-serif;
+html {
+  height: 100%;
 }
 
-#ads-overlay h1 {
-    font-size: 28px;
-    color: #FFFFFF;
+body {
+  margin: 0;
+  color: #eee;
+  background: linear-gradient(#fc177e, #fd6c6b);
+  background-repeat: no-repeat;
+  font-family: 'Roboto', sans-serif;
+  color: #eee;
+  width: 240px;
+  height: 210px;
+  display:inline-block;
 }
 
-#ads-overlay p {
-    margin: 10px 0;
+label {
+  margin: 0.5em 0;
+  display: inline-block;
 }
 
-#ads-overlay label {
-    color: #EEEEEE;
-    font-weight: normal;
-    font-size: 1em;
+.header {
+  color: #eee;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
-#ads-overlay button {
-    padding: 5px 10px;
-    margin: 0 0 0 0 !important;
-    border: 0px;
+h1 {
+  font-size: 23px;
+  display: inline-block;
+  padding: 5px;
+}
+
+.about, .run-manual {
+  text-align: center;
+  text-decoration: none;
+}
+
+#run-automatic {
+  
+}
+
+a:link, a:visited {
+    background-color: #eee;
+    color: gray;
+    padding: 14px 25px;
+    outline : none;
+    text-decoration: none;
+    text-align: center;
     display: inline-block;
-    cursor: pointer;
-    font-size: 1em;
-    background-color: #FFFFFF;
 }
 
-#ads-overlay button.low {
-    background-color: #DDDDDD;
+a:hover, a:active {
+    background-color: #ccc;
 }
 
-#start-clean {
-    position: absolute;
-    left: 20px;
-    bottom: 20px;
-}
-
-#readd-content {
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
-}
-
-.action {
-    background-color: #FFFFFF;
-    color: #bbb;
+form {
+  padding: 0 25px;
 }
 
 .container {
+  font-size: 15px;
   display: block;
   position: relative;
   padding-left: 30px;

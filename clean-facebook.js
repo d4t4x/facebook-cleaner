@@ -216,7 +216,9 @@ function reAddInterests() {
     }
 }
 
-// Second section
+//
+// "Advertisers" functions
+//
 function cleanAdvertisers() {
     console.log("Cleaning advertisers you've interacted with");
     ////////////// optimize, so no need to close the other sections
@@ -263,7 +265,9 @@ function cleanAdvertisers() {
     // };
 }
 
-// Third section
+//
+// "Categories" functions
+//
 function cleanYourCategories() {
     console.log("Cleaning your categories");
     ////////////// optimize, so no need to close the other sections
@@ -300,7 +304,7 @@ $(window).load(function() {
     // adding UI elements
     $("#ads_preferences_desktop_root")
         .append($("<div>", { id: "ads-overlay" })
-            .append($("<h1>").text("Facebook Cleaner"))
+            .append($("<h1>").text("Target ____"))
             .append($("<p>").text("Choose what you want to get rid of."))
             .append($("<form>", { id: "clean-options" })
                 .append($("<label>", { class: "container" }).text("Remove Ad Interests")
@@ -318,7 +322,7 @@ $(window).load(function() {
                 .hide()
             )
             .append($("<button>", { id: "start-clean", class: "high button" }).text("Start Cleaning").hide())
-            .append($("<button>", { id: "readd-content", class: "low button" }).text("Readd All Removed Items").hide())
+            .append($("<button>", { id: "readd-content", class: "low button" }).text("Re-add Removed Items").hide())
         );
     openSections(function() {
         // after opening all the sections show the options/buttons

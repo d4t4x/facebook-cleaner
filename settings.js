@@ -15,6 +15,12 @@ $( document ).ready(function() {
 
   // Listens to changes to the checkboxes and updates chrome.storage.local
   function listenerFunction() {
+
+    // accordian unfold
+    document.getElementById('run-automatic').addEventListener('onclick', function(items) {
+      console.log('clicked');
+    })
+
     // first checkbox
     document.getElementById('clean-1').addEventListener('change', function(items) {
       var value1 = document.getElementById('clean-1').checked; // true or false
