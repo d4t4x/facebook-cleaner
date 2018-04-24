@@ -22,7 +22,7 @@ Option #3: From this repo (for Chrome)
 * Open `chrome://extensions` in the location or go to `Tools` > `Extensions`
 * Enable `Developer mode` by checking the checkbox in the upper-right corner
 * Click on the button labelled `Load unpacked extension...`
-* Select the directory where you cloned this repo
-* Go to Facebook.
+* Select the "build" folder from the directory where you cloned this repo
+* Click on the extension icon in the toolbar or go to facebook.com/ads/preferences.
 
 ### License

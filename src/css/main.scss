@@ -1,0 +1,52 @@
+$baseU: 10;
+$w: #FFFFFF;
+$b: #000000;
+$green: #00FF80;
+$blue: #0080FF;
+$blue2: #19E8FF;
+$magenta: #FF00B1;
+$yellow: #FFFF00;
+$red: #e91e53;
+$w2: #CCC;
+$baseFontSize: 12;
+$fontFamily: "Menlo",
+monospace;
+
+body {
+    background-color: $b;
+    color: $w;
+    font-family: $fontFamily;
+    font-weight: 100;
+    line-height: 1.4em;
+    font-size: $baseFontSize + px;
+    margin: 0;
+    min-width: 1000px;
+}
+
+a {
+    color: $magenta;
+    text-decoration: none;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+    line-height: 1.4em;
+}
+
+.warning {
+    color: $red;
+}
+
+#loading {
+    animation: fade 1s linear infinite alternate;
+}
+
+@keyframes fade {
+    0% {
+        opacity: 0.4;
+    }
+    100% {
+        opacity: 1;
+    }
+}
