@@ -2,6 +2,9 @@ module.exports = {
     now: function() {
         return moment().format();
     },
+    unix: function() {
+        return moment().unix();
+    },
     convertImg: function(url, callback) {
         // https://davidwalsh.name/convert-image-data-uri-javascript
         var img = new Image();
@@ -12,16 +15,9 @@ module.exports = {
             canvas.height = this.naturalHeight;
             canvas.getContext('2d').drawImage(this, 0, 0);
             var dataURL = canvas.toDataURL('image/png');
-            callback(dataURL,
-                dataURL
-                .replace(/^data:image\/(png|jpg);base64,/,
-                    ''));
+            callback([dataURL, dataURL.replace(/^data:image\/(png|jpg);base64,/,'')]);
         };
         img.src = url;
-
-        // helper.convertImg("imgSrc", function(dataUri, rawImg) {
-        //     helper.sendToBg("profilePic", [dataUri, rawImg);
-        // });
     },
     sendToBg: function(_type, _data) {
         chrome.runtime.sendMessage({

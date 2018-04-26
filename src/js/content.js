@@ -14,11 +14,13 @@
 // along with Target ___.  If not, see <http://www.gnu.org/licenses/>.
 
 var helper = require("./content_helpers.js"),
+    items = require("./content_items.js"),
     kickoff = {
         listeners: function() {
             chrome.runtime.onMessage.addListener(function(req, sen, res) {
                 if (req.webRequest) {
-                    looked.updateNewsFeed();
+                    console.log(">>> New content loading.");
+                    items.updateNewsFeed();
                 }
             });
         }
@@ -27,18 +29,16 @@ var helper = require("./content_helpers.js"),
 var start = function() {
     console.log("\n\n\n\n\nYay! Content page document.readyState: ", document.readyState);
     // this class can change anytime
-    // and could easily be the reason why tracking will stop working
+    // could be the reason why tracking doesn't work
     var info = $("#pagelet_bluebar a._2s25").has("img");
     if (info.length > 0) {
         // this is the beginning, bg only starts tracking
-        // if profle img / logged in
-        helper.sendToBg("contentLoaded", [1]); // session true
+        // if profle img is there / user is logged in
         console.log("Tracking on this page.");
         kickoff.listeners();
-        looked.init();
+        items.init();
     } else {
-        helper.sendToBg("contentLoaded", [0]); // session false
-        console.log("Boo! No tracking on this page. Only activity in your newsfeed are tracked. Check https://github.com/d4t4x/data-selfie/issues");
+        console.log("Boo! No tracking on this page. Only activity in your newsfeed are tracked.");
     };
 }
 

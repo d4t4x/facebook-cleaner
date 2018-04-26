@@ -13,14 +13,13 @@ $fontFamily: "Menlo",
 monospace;
 
 body {
-    background-color: $b;
-    color: $w;
+    background-color: $w;
+    color: $b;
     font-family: $fontFamily;
     font-weight: 100;
     line-height: 1.4em;
     font-size: $baseFontSize + px;
     margin: 0;
-    min-width: 1000px;
 }
 
 a {
@@ -36,6 +35,53 @@ p {
 
 .warning {
     color: $red;
+}
+
+#container {
+    min-width: 1000px;
+}
+
+#sidebar {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    padding: 10px 20px;
+    width: 250px;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.98);
+}
+
+#toc {
+    ul {
+        width: 150px;
+        list-style: none;
+        padding: 0;
+        li {
+            padding: 0;
+        }
+    }
+    a {
+        display: inline-block;
+    }
+}
+
+#content {
+    position: relative;
+    width: 450px;
+    margin: 0 0 0 300px;
+    .month {
+        div {
+            margin: 0 0 50px 0;
+        }
+    }
+    .item {
+        margin: 50px 0;
+        width: 100%;
+        img {
+            width: 100%;
+        }
+    }
 }
 
 #loading {

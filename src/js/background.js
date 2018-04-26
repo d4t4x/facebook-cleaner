@@ -21,6 +21,9 @@ var greeting = "HELLO TARGET ___ <3",
     dbstores = require("./dbstores.js");
 
 function generalListeners() {
+    chrome.browserAction.onClicked.addListener(function() {
+        chrome.tabs.create({ url: chrome.runtime.getURL("views/me.html") });
+    });
     chrome.runtime.onUpdateAvailable.addListener(function(details) {
         chrome.browserAction.setBadgeText({ text: "!" });
         chrome.runtime.reload();
@@ -30,24 +33,6 @@ function generalListeners() {
     });
     chrome.runtime.onMessage.addListener(function(req, sender, sendRes) {
         switch (req.type) {
-            case "contentLoaded":
-                console.log("[>>] " + sender.tab.url + "\t" + sender.tab.status);
-                if (parseInt(req.data[0]) == 1) {
-                    setTimestamp("start", req.type);
-                };
-                // FIX proper escaping of url
-                db.pages.add({ url: sender.tab.url, timestamp: helper.now(), inSession: req.data[0] });
-                break;
-            case "profilePic":
-                chrome.storage.local.set({
-                    "dsUser": {
-                        profilePic: {
-                            dataUri: req.data[0],
-                            rawImg: req.data[1]
-                        }
-                    }
-                });
-                break;
             case "backup":
                 helper.backup(db);
                 break;
@@ -62,8 +47,8 @@ function generalListeners() {
                 helper.resetDB(db, initDB, sender.tab.id);
                 chrome.storage.local.clear(initOptions);
                 break;
-            case "saveLooked":
-                db.looked.add(req.data);
+            case "saveItem":
+                db.items.add(req.data);
                 break;
         }
         return true;
@@ -78,36 +63,9 @@ function generalListeners() {
         }
         lastWebReq = info.timeStamp;
     }, {
-        urls: ["https://www.facebook.com/*", "http://www.facebook.com/*"],
-        types: ["image"]
-    });
+        urls: ["https://www.facebook.com/*", "http://www.facebook.com/*"]
+    }, []);
 }
-
-function saveTimestamp(now, status, event) {
-    db.transaction("rw", db.timespent, function() {
-        db.timespent.toCollection().last(function(last) {
-            if (status == "start" && last == undefined) {
-                db.timespent.add({ start: now });
-            } else if (status == "start" && last.stop != undefined) {
-                db.timespent.add({ start: now });
-            } else if (status == "stop" && last.stop == undefined) {
-                db.timespent.update(last.id, { stop: now });
-            };
-        });
-    });
-}
-
-function setTimestamp(status, event) {
-    if (session == true && status == "stop") {
-        session = false;
-        console.log("%c----- [sessions][>>]\t" + status + "\t" + event, helper.clog.fb);
-    } else if (session == false && status == "start") {
-        session = true;
-        console.log("%c+++++ [sessions][>>]\t" + status + "\t" + event, helper.clog.fb);
-    }
-    helper.setBrowserActionIcon(status);
-    saveTimestamp(moment().format(), status, event);
-};
 
 function initDB(notify) {
     // if db already exists, dexie only opens
@@ -129,15 +87,8 @@ function initDB(notify) {
 function init() {
     console.log("%c" + greeting, helper.clog.lime);
     initDB(false);
-    // generalListeners();
-    // helper.setBrowserActionIcon(session);
+    generalListeners();
     helper.getPermissions();
 }
 
 init();
-
-chrome.browserAction.onClicked.addListener(function(){
-    chrome.tabs.create({ url: chrome.runtime.getURL("views/me.html") });
-})
-
-
