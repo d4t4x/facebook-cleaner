@@ -21,7 +21,8 @@ function getDropdownLinks() {
 
 function cleanTabsFromDropdown(index, links, names, sectionI) {
     links[index].click();
-    // remove the clicked one (=first)
+    console.log("clicked", links[index].innerText);
+    // remove the clicked one (i.e. the first)
     names.splice(0, 1);
     console.log("Not clicked yet", names);
 
@@ -29,13 +30,14 @@ function cleanTabsFromDropdown(index, links, names, sectionI) {
         var interestsSection = general.getSectionDom(sectionI);
         var likes = interestsSection.find("._2b2n");
         if (names.length > 0) {
-            general.actuallyClick(0, likes, function() {
+            general.actuallyClick(sectionI, 0, likes, [], function(d) {
+                console.log(d);
                 general.clickMoreDropdown(sectionI, general.getSectionDom(sectionI), function() {
                     links = getDropdownLinks();
                     for (var i = 0; i < links.length; i++) {
                         // console.log("compare", i, links[i].innerText, names[0]);
                         if (links[i].innerText == names[0]) {
-                            cleanTabsFromDropdown(i, links, names);
+                            cleanTabsFromDropdown(i, links, names, sectionI);
                             break;
                         }
                     }
@@ -67,7 +69,8 @@ function interestsTabs(i, tabs, section) {
         var likes = section.find("._2b2n");
         console.log(title, likes.length);
         if (likes.length > 0) {
-            general.actuallyClick(0, likes, function() {
+            general.actuallyClick(secNo, 0, likes, [], function(d) {
+                console.log(d);
                 console.log("done", title);
                 i++;
                 if (i < tabs.length) {
@@ -102,7 +105,8 @@ function adsTabs(i, tabs, section) {
             }
         }
         if (items.length > 0) {
-            general.actuallyClick(0, items, function() {
+            general.actuallyClick(secNo, 0, items, [], function(d) {
+                console.log(d);
                 logic();
             });
         } else {
@@ -118,7 +122,7 @@ function infoTabs(i, tabs, section) {
     var secNo = 2;
     clickSeeMore(secNo, function() {
         var items = [];
-        section.find("._zom").each(function(){
+        section.find("._zom").each(function() {
             items.push($(this).children("._gze._kcu").first().find("i"));
         });
         console.log(title, items.length);
@@ -134,7 +138,8 @@ function infoTabs(i, tabs, section) {
             }
         }
         if (items.length > 0) {
-            general.actuallyClick(0, items, function() {
+            general.actuallyClick(secNo, 0, items, [], function(d) {
+                console.log(d);
                 logic();
             });
         } else {
@@ -165,8 +170,9 @@ module.exports = {
         infoTabs(1, tabs, infoSection);
     },
     reAddInterests: function() {
+        var secNo = 0;
         console.log("Readding all the interests.");
-        var interestsSection = general.getSectionDom(0);
+        var interestsSection = general.getSectionDom(secNo);
 
         // only time the Removed Interests is a tab (not hidden in More) is when all Interests are removed
         // then Removed Interests is the first tab
@@ -195,7 +201,8 @@ module.exports = {
             clickSeeMore(0, function() {
                 var likes = interestsSection.find("._2b2m");
                 if (likes.length > 0) {
-                    general.actuallyClick(0, likes, function() {
+                    general.actuallyClick(secNo, 0, likes, [], function(d) {
+                        console.log(d);
                         console.log("Removed interests readded", likes.length);
                     });
                 };

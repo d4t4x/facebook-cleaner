@@ -17,29 +17,43 @@ module.exports = {
     clickMoreDropdown: function(sectionI, section, callback) {
         var more = section.find("._1b0");
         more.on('click', function() {
+            more.off();
             // wait for the menu to load
-            setTimeout(function(){
+            setTimeout(function() {
+                console.log("Clicked More");
                 callback(sectionI);
             }, 1500);
-            console.log("Clicked More");
         });
         more.click();
     },
-    actuallyClick: function(index, buttons, callback) { // Iterate through clicking the boxes in view
+    actuallyClick: function(section, index, buttons, clickedArr, callback) { // Iterate through clicking the boxes in view
         var self = this;
         if (buttons.length > 0) {
+            switch (section) {
+                case 0:
+                    var parent = $(buttons[index]).parents("._3viq").find("._qm-");
+                    break;
+                case 1:
+                    var parent = $(buttons[index]).parents("._3viq").find("._3vin");
+                    break;
+                case 2:
+                    var parent = $(buttons[index]).parents("._zoj._5f0v").find("._zok._4ik4._4ik5");
+                    break;
+            }
+            parent.css("color", "red");
+            clickedArr.push(parent.text());
             buttons[index].click();
             index++;
             if (index < buttons.length) {
                 setTimeout(function() {
-                    self.actuallyClick(index, buttons, callback);
+                    self.actuallyClick(section, index, buttons, clickedArr, callback);
                     // create a delay so the click can be registered
                 }, 200);
             } else {
-                callback();
+                callback(clickedArr);
             }
         } else {
-            callback();
+            callback(clickedArr);
         }
     },
     updateCheckedCategoriesText: function(items) {

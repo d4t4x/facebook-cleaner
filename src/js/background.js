@@ -50,6 +50,9 @@ function generalListeners() {
             case "saveItem":
                 db.items.add(req.data);
                 break;
+            case "saveCleanTime":
+                db.cleaning.add(req.data);
+                break;
         }
         return true;
     });
