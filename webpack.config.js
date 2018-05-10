@@ -16,7 +16,8 @@ module.exports = {
         content: "./js/content.js",
         clean: "./js/clean.js",
         background: "./js/background.js",
-        me: "./js/views/me.js"
+        me: "./js/views/me.js",
+        options: "./js/views/options.js"
     },
     output: {
         path: __dirname + "/build/js",

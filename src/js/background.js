@@ -32,9 +32,9 @@ function generalListeners() {
     chrome.runtime.onInstalled.addListener(function(details) {
         console.log("onInstalled", details.reason);
     });
-    chrome.alarms.onAlarm.addListener(function(){
+    chrome.alarms.onAlarm.addListener(function() {
         console.log("Clean alarm");
-        alert("It's time to clean your ads prefereneces");
+        // alert("It's time to clean your ads preferences");
         chrome.browserAction.setBadgeText({ text: "!" });
     });
     chrome.runtime.onMessage.addListener(function(req, sender, sendRes) {
@@ -61,7 +61,7 @@ function generalListeners() {
                 break;
             case "saveCleanTime":
                 db.cleaning.add(req.data);
-                chrome.alarms.clear("clean-alarm", function(wasCleared){
+                chrome.alarms.clear("clean-alarm", function(wasCleared) {
                     console.log("Clean alarm was cleared " + wasCleared);
                     setAlarm();
                 });
@@ -83,10 +83,17 @@ function generalListeners() {
     }, []);
 }
 
+function initLocalStorage() {
+    chrome.storage.local.get(null, function(data) {
+        console.info(data);
+    });
+}
+
 function setAlarm() {
     // for debugging, time should be adjusted
-    var firstAlarm = Date.now() + 5000; // ms
-    chrome.alarms.create("clean-alarm", { when: firstAlarm, periodInMinutes: 5 });
+    // var firstAlarm = Date.now() + (1000*60*60*24*7); // ms
+    var firstAlarm = Date.now() + (1000*60*60*24); // every day
+    chrome.alarms.create("clean-alarm", { when: firstAlarm, periodInMinutes: (60*24) });
     console.log("Clean alarm was created ", firstAlarm);
 }
 
@@ -111,6 +118,7 @@ function init() {
     console.log("%c" + greeting, helper.clog.lime);
     initDB(false);
     setAlarm();
+    initLocalStorage();
     generalListeners();
     helper.getPermissions();
 }
