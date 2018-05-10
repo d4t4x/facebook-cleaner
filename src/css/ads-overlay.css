@@ -30,10 +30,15 @@
 
 .content {
     width: 979px;
-    margin: auto;
+    margin: 5px auto;
     left: 0;
     right: 0;
     position: relative;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
 }
 
 #ads-overlay label {
@@ -53,9 +58,19 @@
     background-color: #FFFFFF;
 }
 
+#ads-overlay button.special {
+    background-color: #392177;
+    color: #fff;
+}
+
 #ads-overlay button.low {
     background-color: #CCCCCC;
     color: #888;
+}
+
+.highlight {
+    text-decoration: underline;
+    font-style: italic;
 }
 
 .action {
@@ -91,7 +106,6 @@
     position: relative;
     /* positioning of label to checkbox */
     padding: 6px 0 6px 35px;
-    margin-bottom: 10px;
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;

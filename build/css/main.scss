@@ -96,10 +96,12 @@ p {
             margin-top: 0.5em;
         }
     }
+    .item, .clean {
+        margin: 50px 0;
+    }
     .item {
         background-color: $w;
         padding: 10px;
-        margin: 50px 0;
         width: 100%;
         box-sizing: border-box;
         img {
@@ -123,8 +125,15 @@ p {
             height: 1em;
             border-top: 3px solid $pink;
             position: absolute;
-            margin-left: calc(-100% - 10px);
+            margin-left: calc(-100% - 20px);
             margin-top: 0.5em;
+        }
+        h4 {
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
         }
     }
 }

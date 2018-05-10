@@ -34,15 +34,18 @@ module.exports = {
                     var parent = $(buttons[index]).parents("._3viq").find("._qm-");
                     break;
                 case 1:
-                    var parent = $(buttons[index]).parents("._3viq").find("._3vin");
+                    var parent = $(buttons[index]).parents("._2b2e").find("._3vin");
                     break;
                 case 2:
-                    var parent = $(buttons[index]).parents("._zoj._5f0v").find("._zok._4ik4._4ik5");
+                    var parent = $(buttons[index]).parents("._zoj").find("div");
                     break;
             }
             parent.css("color", "red");
             clickedArr.push(parent.text());
-            buttons[index].click();
+            // click to remove/clean this category/advertiser
+            if (window.debugMode === false) {
+                buttons[index].click();
+            };
             index++;
             if (index < buttons.length) {
                 setTimeout(function() {
@@ -62,7 +65,7 @@ module.exports = {
         if (items['clean-2']) { checkedCategories.push('"Advertisers you\'ve interacted with"') };
         if (items['clean-3']) { checkedCategories.push('"Your Information"') };
         if (checkedCategories.length > 0) {
-            $("#checked-categories").text("You've checked the following sections: " + _.join(checkedCategories, ", ") + ".");
+            $("#checked-categories").text("You've checked the following sections: ").append($("<span>", { class: "highlight" }).text(_.join(checkedCategories, ", ")));
             $("#start-clean").removeClass("low");
         } else {
             $("#checked-categories").text("You haven't checked any sections below yet.");
@@ -84,8 +87,15 @@ module.exports = {
                 .append($("<p>", { class: "content" }).text(" Scroll down and check the boxes at the top of the sections below to remove it's content.")
                     .prepend($("<b>").text("Target ____")))
                 .append($("<p>", { id: "checked-categories", class: "content" }).hide())
-                .append($("<div>", { class: "content" })
-                    .append($("<button>", { id: "start-clean", class: "button" }).text("Clean checked preferences now").hide())
+                .append($("<div>", { class: "content flex" }).hide()
+                    .append($("<button>", { id: "start-clean", class: "button" }).text("Clean checked preferences now"))
+                    .append($("<button>", { id: "stream-link", class: "special" }).text("Stream of collected Sponsored Posts"))
+                )
+                .append($("<div>", { class: "content flex" }).hide()
+                    .append($("<label>", { class: "container" }).text("Debug Mode")
+                        .append($("<input>", { id: "debug", type: "checkbox" }))
+                        .append($("<span>", { class: "checkmark" }))
+                    )
                 )
             );
 
@@ -120,5 +130,9 @@ module.exports = {
                 });
             })
         }
+        $("#debug").change(function(e) {
+            window.debugMode = e.target.checked;
+            console.log("DebugMode", e.target.checked);
+        });
     }
 }

@@ -15,8 +15,7 @@
         "storage",
         "webRequest",
         "https://www.facebook.com/*",
-        "http://www.facebook.com/*",
-        "downloads"
+        "http://www.facebook.com/*"
     ],
     "icons":
     {

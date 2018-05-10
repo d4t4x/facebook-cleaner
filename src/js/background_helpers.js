@@ -20,11 +20,6 @@ module.exports = {
     sendToContent: function(tabid) {
         chrome.tabs.sendMessage(tabid, { webRequest: 1 });
     },
-    downloadBar: function() {
-        setTimeout(function() {
-            chrome.downloads.erase({ "state": "complete" });
-        }, 5000);
-    },
     saveBackup: function(data, name) {
         console.log("[DB][<<] backup", data);
         var blob = new Blob([JSON.stringify(data, null, 2)], { type: "text/json;charset=utf-8" })
@@ -37,26 +32,18 @@ module.exports = {
     },
     backup: function(_db) {
         var self = this;
-        if (_db != undefined) {
-            var obj = { dataselfieconsumption: {} };
-            _db.transaction('r', _db.tables, function() {
-                _db.tables.forEach(function(table) {
-                    table.toArray().then(function(sessions) {
-                        obj.dataselfieconsumption[table.name] = sessions;
-                    });
-                })
-            }).then(function() {
-                self.saveBackup(obj, "consumption");
-            }).catch(function(err) {
-                console.error(err.stack);
-            });
-        } else {
-            var obj = { dataselfieprediction: {} };
-            chrome.storage.local.get(function(data) {
-                obj.dataselfieprediction = data;
-                self.saveBackup(obj, "prediction");
-            });
-        }
+        var obj = { dataselfieconsumption: {} };
+        _db.transaction('r', _db.tables, function() {
+            _db.tables.forEach(function(table) {
+                table.toArray().then(function(sessions) {
+                    obj.dataselfieconsumption[table.name] = sessions;
+                });
+            })
+        }).then(function() {
+            self.saveBackup(obj, "consumption");
+        }).catch(function(err) {
+            console.error(err.stack);
+        });
     },
     importError: function(tabid) {
         console.log("%c[DB][<<] import (json) error", clog.magenta);

@@ -10,8 +10,7 @@ var start = function() {
         // after opening all the sections show the options/buttons
         setTimeout(function() {
             $(".section-checkbox").show();
-            $("#checked-categories").fadeIn();
-            $(".button").fadeIn();
+            $(".content").fadeIn();
             general.listenerFunction();
             $("#readd-interests").click(function() {
                 cleanExec.reAddInterests();
@@ -30,6 +29,9 @@ var start = function() {
                     cleanExec.cleanYourInfo();
                 }
             });
+        });
+        $("#stream-link").click(function() {
+            chrome.runtime.sendMessage({ type: "openStream" });
         });
     });
 };

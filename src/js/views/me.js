@@ -20,18 +20,13 @@ var helper = require("./me_helpers.js"),
     body = $("body");
 
 function showItems(arr) {
-    arr.push({
-        unix: 1524821004,
-        timestamp: "2018-04-27T11:23:22+04:00",
-        removed: ["test", "test2"]
-    });
+    // timeline start
+    var startDate = moment.unix(_.sortBy(arr, "unix")[0].unix);
+    var now = moment();
 
     var stream = $("#stream");
-    arr = _.sortBy(arr, "unix").reverse();
+    arr = arr.reverse();
     console.log(arr);
-
-    var startDate = moment([2018, 0, 1]);
-    var now = moment();
 
     // create divs for each year and month
     var timePassed = now.diff(startDate, 'years');
@@ -76,20 +71,33 @@ function showItems(arr) {
     for (var i = 0; i < arr.length; i++) {
         var time = moment(arr[i].timestamp);
         if (arr[i].removed != undefined) {
-            stream.find("#" + time.year() + time.format("MMMM"))
-                .append($("<div>", { class: "clean", id: "d" + arr[i].unix })
-                    .append($("<p>").text("You have cleaned your preferences at " + time.format("MMMM DD, YYYY - HH:mm:ss") + " and removed " + _.join(arr[i].removed, ", ")))
+            var removeDiv = $("<div>", { class: "clean", id: "d" + arr[i].unix });
+            var removeList = $("<ul>");
+
+            for (var j = 0; j < arr[i].removed.length; j++) {
+                removeList.append($("<li>")
+                    .append($("<u>").text(arr[i].removed[j].title))
+                    .append($("<p>").text(_.join(arr[i].removed[j].items, ", ")))
                 );
+            };
+
+            removeDiv.append($("<h4>").text(time.format("MMMM DD, YYYY - HH:mm:ss")))
+                .append($("<p>").text("You have cleaned your preferences and removed: "))
+                .append(removeList);
+
+            stream.find("#" + time.year() + time.format("MMMM")).append(removeDiv);
         } else {
+            var name = arr[i].origPoster === undefined ? _.last(arr[i].posters).name : arr[i].origPoster.name,
+                activity = name === arr[i].postActivity ? "" : arr[i].postActivity;
+
             stream.find("#" + time.year() + time.format("MMMM"))
                 .append($("<div>", { class: "item", id: "d" + arr[i].unix })
-                    .append($("<p>", { class: "name" }).text(arr[i].postActivity))
+                    .append($("<p>", { class: "name" }).text(name))
+                    .append($("<p>").text(activity))
                     .append($("<p>", { class: "date" }).text(time.format("MMMM DD, YYYY - HH:mm:ss")))
-                    .append($("<p>").text(arr[i].suggested + " - " + arr[i].sponsored.replace(" · ", "")))
                     .append($("<img>", { src: arr[i].postImgRaw[0] }))
                     .append($("<p>").text(_.join(arr[i].postDesc, "\n\n")))
-                    .append($("<p>").text(arr[i].origLink))
-                    .append($("<p>").text(arr[i].origPoster))
+                    .append($("<p>").text(_.join(arr[i].origLink, "\n\n")))
                     .append($("<p>").text(_.join(arr[i].origDesc, "\n\n")))
                 );
         }
@@ -109,8 +117,14 @@ var main = {
             db.items.toArray(function(arr) {
                 // check if db has content
                 if (arr.length > 0) {
-                    $("#message").text("You're data base has " + arr.length + " records.");
-                    showItems(arr);
+                    $("#message").text("You're data base has " + arr.length + " record(s).");
+                    db.cleaning.toArray(function(cleanArr) {
+                        if (cleanArr.length > 0) {
+                            showItems(_.concat(arr, cleanArr));
+                        } else {
+                            showItems(arr);
+                        };
+                    })
                 } else {
                     $("#message").text("You haven't collected any sponsored posts yet.");
                 }

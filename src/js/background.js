@@ -36,6 +36,9 @@ function generalListeners() {
             case "backup":
                 helper.backup(db);
                 break;
+            case "openStream":
+                chrome.tabs.create({ url: chrome.runtime.getURL("views/me.html") });
+                break;
             case "import":
                 if (req.data.dataselfie != undefined) {
                     helper.import(db, req.data.dataselfie, sender.tab.id);

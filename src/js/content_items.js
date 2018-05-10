@@ -15,7 +15,7 @@ var helper = require("./content_helpers.js"),
                 "origLink": [], // what they shared (if at all)
                 "origPoster": undefined, // who they shared it from (if at all)
                 "origDesc": [], // what the shared content says (if at all)
-                "suggested": undefined,
+                "rationale": undefined,
                 "sponsored": undefined,
                 "timestamp": helper.now(),
                 "unix": helper.unix()
@@ -36,7 +36,8 @@ var helper = require("./content_helpers.js"),
 
             postData.postId = _postId;
 
-            postData.postUrl = postObj.find("a._5pcq").attr("href"); // nested in date
+            // url nested in date, but if sponsored usually there is no url
+            postData.postUrl = postObj.find("a._5pcq").attr("href");
 
             // just get one image from all images in the post
             var imgs = postObj.find("img");
@@ -67,14 +68,8 @@ var helper = require("./content_helpers.js"),
                 });
             };
 
-            // e.g. "Suggested Post" in english
-            postData.suggested = suggestedText;
-
             // e.g. Sponsored instead of date, next to icon for audience (mostly public)
-            var sponsoredTag = postObj.find("div._5pcp._5lel._2jyu._232_");
-            if (sponsoredTag.length > 0) {
-                postData.sponsored = sponsoredTag.text();
-            };
+            postData.sponsored = suggestedText;
 
             // h5 e.g. Regina likes this.
             var h5 = postObj.find("h5");
@@ -91,6 +86,7 @@ var helper = require("./content_helpers.js"),
                     postData.origLink.push(h5link.attr("href"));
                 }
             });
+
             // h6 e.g. New York Times (what Regina likes/interacted with)
             var h6 = postObj.find("h6._5pbw._5vra a")[0];
             if (h6) {
@@ -102,10 +98,10 @@ var helper = require("./content_helpers.js"),
                 postData.origPoster = { name: name, type: type, id: id };
             };
 
-            console.log("%c" + suggestedText + " --- " + postData.posters[0].name, "color: #c667c1");
-            console.log(postData.posters[0].name, postObj);
+            console.log("%c" + suggestedText + " --- " + _.last(postData.posters).name, "color: #c667c1");
+            console.log(postData.postActivity, postObj);
             if (postData.postImg != undefined) {
-                // takes a little bit of time
+                // takes a little bit of time, so after it's done, save the whole item
                 helper.convertImg(postData.postImg, function(data) {
                     postData.postImgRaw = data;
                     helper.sendToBg("saveItem", postData);
@@ -123,16 +119,19 @@ module.exports = {
     },
     filterSponsored: function() {
         var posts = this.getPagePosts();
+        // example how other find ads
+        // https://github.com/WhoTargetsMe/Who-Targets-Me/blob/master/src/daemon/page/FacebookAdvertObserver.js
         posts.each(function() {
             var thisEl = $(this),
-                hasSponsored = thisEl.find("span.p_125f34ts8j"),
-                postId = thisEl.closest("div._5jmm")[0].attributes.id.value; // some id
+                dateOrSponsored = thisEl.find("._5pcp"),
+                hasSponsored = dateOrSponsored.children().find("span.timestampContent").length, // 0, there is no date timestamp
+                postId = thisEl.closest("div._5jmm")[0].attributes.id.value; // some id to distinguish the posts
 
-            if (hasSponsored.length > 0 && sessionItems.indexOf(postId) === -1) {
+            if (hasSponsored === 0 && sessionItems.indexOf(postId) === -1) {
                 // has "Sponsored" text and also is not in the array from this session yet
                 sessionItems.push(postId);
                 thisEl.addClass("highlight");
-                logic.populateObj(thisEl, postId, hasSponsored.text());
+                logic.populateObj(thisEl, postId, dateOrSponsored.text());
             };
         });
     },

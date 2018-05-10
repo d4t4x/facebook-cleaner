@@ -1,4 +1,31 @@
+window.debugMode = false;
 var general = require("./clean_general.js");
+var removedTemp = [{ type: "interests", data: [] }, { type: "advertisers", data: [] }, { type: "info", data: [] }];
+
+function recordCleanData(index) {
+    var date = moment();
+    removedTemp[index] = {
+        unix: date.unix(),
+        timestamp: date.format(),
+        type: removedTemp[index].type,
+        removed: removedTemp[index].data
+    };
+    chrome.runtime.sendMessage({
+        type: "saveCleanTime",
+        data: removedTemp[index]
+    });
+    console.log("Recorded", removedTemp[index]);
+}
+
+function addToTemp(index, title, items) {
+    console.log(title, items);
+    if (items.length > 0) {
+        removedTemp[index].data.push({
+            title: title,
+            items: items
+        });
+    }
+}
 
 function clickSeeMore(sectionI, callback) {
     var section = general.getSectionDom(sectionI);
@@ -20,8 +47,9 @@ function getDropdownLinks() {
 }
 
 function cleanTabsFromDropdown(index, links, names, sectionI) {
+    var title = links[index].innerText;
     links[index].click();
-    console.log("clicked", links[index].innerText);
+    console.log("clicked", title);
     // remove the clicked one (i.e. the first)
     names.splice(0, 1);
     console.log("Not clicked yet", names);
@@ -29,9 +57,10 @@ function cleanTabsFromDropdown(index, links, names, sectionI) {
     setTimeout(function() {
         var interestsSection = general.getSectionDom(sectionI);
         var likes = interestsSection.find("._2b2n");
+        console.log(title, likes.length);
         if (names.length > 0) {
             general.actuallyClick(sectionI, 0, likes, [], function(d) {
-                console.log(d);
+                addToTemp(sectionI, title, d);
                 general.clickMoreDropdown(sectionI, general.getSectionDom(sectionI), function() {
                     links = getDropdownLinks();
                     for (var i = 0; i < links.length; i++) {
@@ -43,13 +72,15 @@ function cleanTabsFromDropdown(index, links, names, sectionI) {
                     }
                 });
             });
+        } else {
+            recordCleanData(sectionI);
         }
     }, 1000);
 }
 
 function sectionDropdownTabs(sectionI) {
     var links = getDropdownLinks();
-    var dropdownTabsNames = [];
+    dropdownTabsNames = [];
     links.each(function(i) {
         var name = links[i].innerText;
         dropdownTabsNames.push(name);
@@ -70,7 +101,7 @@ function interestsTabs(i, tabs, section) {
         console.log(title, likes.length);
         if (likes.length > 0) {
             general.actuallyClick(secNo, 0, likes, [], function(d) {
-                console.log(d);
+                addToTemp(secNo, title, d);
                 console.log("done", title);
                 i++;
                 if (i < tabs.length) {
@@ -106,7 +137,7 @@ function adsTabs(i, tabs, section) {
         }
         if (items.length > 0) {
             general.actuallyClick(secNo, 0, items, [], function(d) {
-                console.log(d);
+                addToTemp(secNo, title, d);
                 logic();
             });
         } else {
@@ -134,16 +165,17 @@ function infoTabs(i, tabs, section) {
                 infoTabs(i, tabs, section);
             } else {
                 console.log("Done Info tabs");
+                recordCleanData(secNo);
                 // no dropdown as of now
             }
         }
         if (items.length > 0) {
             general.actuallyClick(secNo, 0, items, [], function(d) {
-                console.log(d);
+                addToTemp(secNo, title, d);
                 logic();
             });
         } else {
-            // sometimes tabs won't contain boxes
+            // sometimes tabs won't contain boxes, so just move on
             logic();
         };
     });
