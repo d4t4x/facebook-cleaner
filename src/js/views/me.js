@@ -117,16 +117,23 @@ var main = {
             db.items.toArray(function(arr) {
                 // check if db has content
                 if (arr.length > 0) {
-                    $("#message").text("You're data base has " + arr.length + " record(s).");
+                    $("#records").text(arr.length + " record(s) in your database");
                     db.cleaning.toArray(function(cleanArr) {
                         if (cleanArr.length > 0) {
                             showItems(_.concat(arr, cleanArr));
+                            var lastTime = moment(_.last(cleanArr).timestamp);
+                            var now = moment();
+                            var diff = now.diff(lastTime, "days");
+                            $("#cleanings").text(diff + " day(s) since last cleaning");
+                            if (diff > 7) {
+                                $("#cleanings").css("color", "red");
+                            };
                         } else {
                             showItems(arr);
                         };
                     })
                 } else {
-                    $("#message").text("You haven't collected any sponsored posts yet.");
+                    $("#records").text("You haven't collected any sponsored posts yet.");
                 }
             });
         });

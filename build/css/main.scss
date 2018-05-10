@@ -54,12 +54,13 @@ p {
     height: 100vh;
     background-color: $w;
     border-right: 3px solid $purple;
+    overflow: scroll;
     h1 {
         margin: 5px 0 20px;
         padding: 0;
     }
-    #message {
-        margin: 10px 0;
+    p {
+        margin: 15px 0;
     }
 }
 
@@ -96,7 +97,8 @@ p {
             margin-top: 0.5em;
         }
     }
-    .item, .clean {
+    .item,
+    .clean {
         margin: 50px 0;
     }
     .item {

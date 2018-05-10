@@ -23,6 +23,7 @@ var greeting = "HELLO TARGET ___ <3",
 function generalListeners() {
     chrome.browserAction.onClicked.addListener(function() {
         chrome.tabs.create({ url: chrome.runtime.getURL("views/me.html") });
+        chrome.browserAction.setBadgeText({ text: "" });
     });
     chrome.runtime.onUpdateAvailable.addListener(function(details) {
         chrome.browserAction.setBadgeText({ text: "!" });
@@ -30,6 +31,11 @@ function generalListeners() {
     });
     chrome.runtime.onInstalled.addListener(function(details) {
         console.log("onInstalled", details.reason);
+    });
+    chrome.alarms.onAlarm.addListener(function(){
+        console.log("Clean alarm");
+        alert("It's time to clean your ads prefereneces");
+        chrome.browserAction.setBadgeText({ text: "!" });
     });
     chrome.runtime.onMessage.addListener(function(req, sender, sendRes) {
         switch (req.type) {
@@ -55,6 +61,10 @@ function generalListeners() {
                 break;
             case "saveCleanTime":
                 db.cleaning.add(req.data);
+                chrome.alarms.clear("clean-alarm", function(wasCleared){
+                    console.log("Clean alarm was cleared " + wasCleared);
+                    setAlarm();
+                });
                 break;
         }
         return true;
@@ -71,6 +81,13 @@ function generalListeners() {
     }, {
         urls: ["https://www.facebook.com/*", "http://www.facebook.com/*"]
     }, []);
+}
+
+function setAlarm() {
+    // for debugging, time should be adjusted
+    var firstAlarm = Date.now() + 5000; // ms
+    chrome.alarms.create("clean-alarm", { when: firstAlarm, periodInMinutes: 5 });
+    console.log("Clean alarm was created ", firstAlarm);
 }
 
 function initDB(notify) {
@@ -93,6 +110,7 @@ function initDB(notify) {
 function init() {
     console.log("%c" + greeting, helper.clog.lime);
     initDB(false);
+    setAlarm();
     generalListeners();
     helper.getPermissions();
 }
