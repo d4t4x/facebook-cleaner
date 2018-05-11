@@ -106,11 +106,11 @@ button:focus {
         margin: 0 0 50px 0;
         &:before {
             content: "";
-            width: 100%;
+            width: 200%;
             height: 1em;
             border-top: 3px solid $purple;
             position: absolute;
-            margin-left: calc(-100% - 10px);
+            margin-left: calc(-200% - 10px);
             margin-top: 0.5em;
         }
     }
@@ -140,11 +140,11 @@ button:focus {
         box-sizing: border-box;
         &:before {
             content: "";
-            width: 100%;
+            width: 200%;
             height: 1em;
             border-top: 3px solid $pink;
             position: absolute;
-            margin-left: calc(-100% - 20px);
+            margin-left: calc(-200% - 20px);
             margin-top: 0.5em;
         }
         h4 {
