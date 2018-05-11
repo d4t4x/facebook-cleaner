@@ -22,7 +22,7 @@ var helper = require("./me_helpers.js"),
 function showItems(arr) {
     // timeline start
     var startDate = moment.unix(_.sortBy(arr, "unix")[0].unix);
-    var now = moment();
+    var now = moment().add(0, "months");
 
     var stream = $("#stream");
     arr = arr.reverse();
@@ -38,7 +38,9 @@ function showItems(arr) {
         var monthArr = [];
         for (var m = 11; m >= 0; m--) {
             var date = moment([y, m, 1]);
-            if (now.diff(date, "days") >= 0) {
+            console.log(startDate.format("YYYY MMMM DD"), date.format("YYYY MMMM DD"), now.diff(date, "days"), date.diff(startDate, "months"));
+            // check for only past months and after the first ad was recorded
+            if (now.diff(date, "days") >= 0 && date.diff(startDate, "months") >= 0) {
                 monthArr.push(date.format("MMMM"));
             }
         }
@@ -138,9 +140,16 @@ var main = {
             });
         });
     },
+    listener: function() {
+        $('#go-to-options').click(function() {
+            if (chrome.runtime.openOptionsPage) {
+                chrome.runtime.openOptionsPage();
+            } else {
+                window.open(chrome.runtime.getURL('options.html'));
+            }
+        });
+    }
 }
 
-$(document).ready(function() {
-    main.initDB();
-    console.log("Kaboom. Me page loaded.");
-});
+main.initDB();
+main.listener();

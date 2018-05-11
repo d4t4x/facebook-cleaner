@@ -1,17 +1,17 @@
-// This file is part of Target ___.
+// This file is part of FUZZIFY ME.
 
-// Target ___ is free software: you can redistribute it and/or modify
+// FUZZIFY ME is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // any later version.
 
-// Target ___ is distributed in the hope that it will be useful,
+// FUZZIFY ME is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with Target ___.  If not, see <http://www.gnu.org/licenses/>.
+// along with FUZZIFY ME.  If not, see <http://www.gnu.org/licenses/>.
 
 var greeting = "HELLO TARGET ___ <3",
     devMode = true,
@@ -59,6 +59,15 @@ function generalListeners() {
             case "saveItem":
                 db.items.add(req.data);
                 break;
+            case "updateAlarm":
+                chrome.alarms.get("clean-alarm", function(alarm) {
+                    console.log(alarm);
+                    chrome.alarms.clear("clean-alarm", function(wasCleared) {
+                        console.log("Clean alarm was cleared " + wasCleared);
+                        setAlarm();
+                    });
+                });
+                break;
             case "saveCleanTime":
                 db.cleaning.add(req.data);
                 chrome.alarms.clear("clean-alarm", function(wasCleared) {
@@ -85,16 +94,38 @@ function generalListeners() {
 
 function initLocalStorage() {
     chrome.storage.local.get(null, function(data) {
-        console.info(data);
+        console.info("local storage", data);
+        // default options
+        if (data["clean-1"] === undefined) {
+            chrome.storage.local.set({ "clean-1": false });
+        }
+        if (data["clean-2"] === undefined) {
+            chrome.storage.local.set({ "clean-2": false });
+        }
+        if (data["clean-3"] === undefined) {
+            chrome.storage.local.set({ "clean-3": false });
+        }
+        if (data.options === undefined) {
+            chrome.storage.local.set({
+                "options": {
+                    notification: 7,
+                    alert: false
+                }
+            })
+        }
     });
 }
 
 function setAlarm() {
-    // for debugging, time should be adjusted
-    // var firstAlarm = Date.now() + (1000*60*60*24*7); // ms
-    var firstAlarm = Date.now() + (1000*60*60*24); // every day
-    chrome.alarms.create("clean-alarm", { when: firstAlarm, periodInMinutes: (60*24) });
-    console.log("Clean alarm was created ", firstAlarm);
+    chrome.storage.local.get(["options"], function(data) {
+        var notifInterval = data.options.notification; // days
+        db.cleaning.toArray(function(arr) {
+            var lastCleaned = moment.unix(_.last(arr).unix);
+            var firstAlarmFromNow = lastCleaned.add(notifInterval, "days").valueOf();
+            chrome.alarms.create("clean-alarm", { when: firstAlarmFromNow, periodInMinutes: (60 * 24 * notifInterval) });
+            console.log("Clean alarm was created ", firstAlarmFromNow, moment(firstAlarmFromNow).format());
+        });
+    })
 }
 
 function initDB(notify) {

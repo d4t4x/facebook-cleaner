@@ -1,17 +1,17 @@
-// This file is part of Target ___.
+// This file is part of FUZZIFY ME.
 
-// Target ___ is free software: you can redistribute it and/or modify
+// FUZZIFY ME is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // any later version.
 
-// Target ___ is distributed in the hope that it will be useful,
+// FUZZIFY ME is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with Target ___.  If not, see <http://www.gnu.org/licenses/>.
+// along with FUZZIFY ME.  If not, see <http://www.gnu.org/licenses/>.
 
 var helper = require("./content_helpers.js"),
     items = require("./content_items.js"),

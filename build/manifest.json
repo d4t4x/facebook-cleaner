@@ -1,5 +1,5 @@
 {
-    "name": "Target ____",
+    "name": "FUZZIFY ME",
     "version": "1.0",
     "description": "Collect content targeted to you and cleans your ads preferences, so you can compare what's changed.",
     "background":
@@ -9,7 +9,7 @@
     "browser_action":
     {
         "default_icon": "media/48.png",
-        "default_title": "Target ___"
+        "default_title": "FUZZIFY ME"
     },
     "permissions": [
         "storage",

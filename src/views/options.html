@@ -1,14 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Options</title>
+    <title>FUZZIFY ME - Options</title>
+    <style>
+"cleanNotif {
+ width: 4em;
+}
+    </style>
 </head>
+
 <body>
-    <h3>Options</h3>
-    <input type="checkbox"> Enable alerts to remind you to clean your preferences
-    <br>
-    <button id="updateAlarmOption">Save</button>
+    <div id="options-container">
+        <h3>Options</h3>
+        <p>
+            <input type="number" id="cleanNotif" step="1" min="0" max="100"> Interval (in days) to remind you to clean your preferences
+        </p>
+        <p style="display: none">
+            <input type="checkbox" id="cleanAlert"> Enable alerts to remind you to clean your preferences
+        </p>
+        <button id="updateAlarmOption">Save</button>
+    </div>
     <script src="../js/options.js"></script>
 </body>
+
 </html>

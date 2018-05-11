@@ -85,7 +85,7 @@ module.exports = {
         $("#ads_preferences_desktop_root")
             .append($("<div>", { id: "ads-overlay" }).fadeIn()
                 .append($("<p>", { class: "content" }).text(" Scroll down and check the boxes at the top of the sections below to remove its content.")
-                    .prepend($("<b>").text("Target ____")))
+                    .prepend($("<b>").text("FUZZIFY ME")))
                 .append($("<p>", { id: "checked-categories", class: "content" }).hide())
                 .append($("<div>", { class: "content flex" }).hide()
                     .append($("<button>", { id: "start-clean", class: "button" }).text("Clean checked preferences now"))
