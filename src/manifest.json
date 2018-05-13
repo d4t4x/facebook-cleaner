@@ -15,8 +15,7 @@
         "storage",
         "webRequest",
         "alarms",
-        "https://www.facebook.com/*",
-        "http://www.facebook.com/*"
+        "*://*.facebook.com/*"
     ],
     "icons":
     {
@@ -26,13 +25,13 @@
     },
     "content_scripts": [
     {
-        "matches": ["https://www.facebook.com/*", "http://www.facebook.com/*"],
+        "matches": ["*://*.facebook.com/*", "*://*.facebook.com/?*"],
         "js": ["js/content.js"],
         "css": ["css/feed-overlay.css"],
         "run_at": "document_idle"
     },
     {
-        "matches": ["https://*.facebook.com/ads/preferences/*", "http://*.facebook.com/ads/preferences/*"],
+        "matches": ["*://*.facebook.com/ads/preferences/*"],
         "js": ["js/clean.js"],
         "css": ["css/ads-overlay.css"],
         "run_at": "document_idle"
