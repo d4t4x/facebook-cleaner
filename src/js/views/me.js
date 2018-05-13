@@ -20,12 +20,13 @@ var helper = require("./me_helpers.js"),
     body = $("body");
 
 function showItems(arr) {
+    var sortedArr = _.sortBy(arr, "unix");
     // timeline start
-    var startDate = moment.unix(_.sortBy(arr, "unix")[0].unix);
+    var startDate = moment.unix(sortedArr[0].unix);
     var now = moment().add(0, "months");
 
     var stream = $("#stream");
-    arr = arr.reverse();
+    arr = sortedArr.reverse();
     console.log(arr);
 
     // create divs for each year and month
@@ -89,6 +90,7 @@ function showItems(arr) {
 
             stream.find("#" + time.year() + time.format("MMMM")).append(removeDiv);
         } else {
+            console.log("Posters", arr[i].posters, "last", _.last(arr[i].posters));
             var name = arr[i].origPoster === undefined ? _.last(arr[i].posters).name : arr[i].origPoster.name,
                 activity = name === arr[i].postActivity ? "" : arr[i].postActivity;
 

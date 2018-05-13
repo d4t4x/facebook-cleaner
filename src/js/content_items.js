@@ -98,7 +98,7 @@ var helper = require("./content_helpers.js"),
                 postData.origPoster = { name: name, type: type, id: id };
             };
 
-            console.log("%c" + suggestedText + " --- " + _.last(postData.posters).name, "color: #c667c1");
+            console.log("%c" + suggestedText + " --- " + postData.postActivity, "color: #c667c1");
             console.log(postData.postActivity, postObj);
             if (postData.postImg != undefined) {
                 // takes a little bit of time, so after it's done, save the whole item
@@ -124,11 +124,13 @@ module.exports = {
         posts.each(function() {
             var thisEl = $(this),
                 dateOrSponsored = thisEl.find("._5pcp"),
+                postActiv = thisEl.find("h5").length;
                 hasSponsored = dateOrSponsored.children().find("span.timestampContent").length, // 0, there is no date timestamp
                 postId = thisEl.closest("div._5jmm")[0].attributes.id.value; // some id to distinguish the posts
 
-            if (hasSponsored === 0 && sessionItems.indexOf(postId) === -1) {
-                // has "Sponsored" text and also is not in the array from this session yet
+            if (hasSponsored === 0 && postActiv > 0 && sessionItems.indexOf(postId) === -1) {
+                // has "Sponsored" text and is indeed a post, not people you may now etc.
+                // and also is not in the array from this session yet
                 sessionItems.push(postId);
                 thisEl.addClass("highlight");
                 logic.populateObj(thisEl, postId, dateOrSponsored.text());

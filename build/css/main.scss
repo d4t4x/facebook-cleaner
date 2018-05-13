@@ -61,9 +61,16 @@ button:focus {
     background-color: $w;
     border-right: 3px solid $purple;
     overflow: scroll;
+    img {
+        width: 26px;
+        position: relative;
+        top: 4px;
+    }
     h1 {
-        margin: 5px 0 20px;
+        margin: 0 0 0 8px;
         padding: 0;
+        display: inline-block;
+        color: $purple;
     }
     p {
         margin: 15px 0;
@@ -132,6 +139,9 @@ button:focus {
         .name {
             font-weight: bold;
         }
+    }
+    h1, h2 {
+        color: $purple;
     }
     .clean {
         background-color: $pink;

@@ -2,25 +2,30 @@ window.debugMode = false;
 var general = require("./clean_general.js");
 var template = [{ type: "interests", data: [] }, { type: "advertisers", data: [] }, { type: "info", data: [] }];
 var removedTemp = [{ type: "interests", data: [] }, { type: "advertisers", data: [] }, { type: "info", data: [] }];
+var interestsMoreDropDown = false;
 
-function recordCleanData(index) {
+function recordCleanData(secI) {
     var date = moment();
-    removedTemp[index] = {
-        unix: date.unix(),
-        timestamp: date.format(),
-        type: removedTemp[index].type,
-        removed: removedTemp[index].data
-    };
-    chrome.runtime.sendMessage({
-        type: "saveCleanTime",
-        data: removedTemp[index]
-    });
-    console.log("Recorded", removedTemp[index]);
-    removedTemp[index] = template[index];
+    if (removedTemp[secI].data.length > 0) {
+        removedTemp[secI] = {
+            unix: date.unix(),
+            timestamp: date.format(),
+            type: removedTemp[secI].type,
+            removed: removedTemp[secI].data
+        };
+        chrome.runtime.sendMessage({
+            type: "saveCleanTime",
+            data: removedTemp[secI]
+        });
+        console.log("Recorded", removedTemp[secI]);
+        removedTemp[secI] = template[secI];
+    } else {
+        console.log("Nothing cleaned.");
+    }
 }
 
 function addToTemp(index, title, items) {
-    console.log(title, items, index, removedTemp);
+    console.log(title, items);
     if (items.length > 0) {
         removedTemp[index].data.push({
             title: title,
@@ -44,8 +49,10 @@ function clickSeeMore(sectionI, callback) {
     }, 500);
 }
 
-function getDropdownLinks() {
-    return $("._54nh");
+function getDropdownLinks(moreId) {
+    var dropDown = $(".uiLayer[data-ownerid='" + moreId + "']");
+    console.log("Dropdown uiLayer", dropDown);
+    return dropDown.find("._54nh");
 }
 
 function cleanTabsFromDropdown(index, links, names, sectionI) {
@@ -59,10 +66,10 @@ function cleanTabsFromDropdown(index, links, names, sectionI) {
     setTimeout(function() {
         var section = general.getSectionDom(sectionI);
         var items = section.find("._2b2n");
-        var otherItems = section.find("._2b2h");
+        var otherItems = section.find("._2b2p");
         console.log(title, items.length, otherItems.length);
 
-        // if the boxes with just x-remove button are not there and the items with dropdown are there
+        // if the boxes with just x-remove button are not there, instead the items with dropdown are there
         // iterate through those
         if (otherItems.length > items.length) {
             items = otherItems;
@@ -74,8 +81,8 @@ function cleanTabsFromDropdown(index, links, names, sectionI) {
                 if (names.length === 0) {
                     recordCleanData(sectionI);
                 } else {
-                    general.clickMoreDropdown(sectionI, general.getSectionDom(sectionI), function() {
-                        links = getDropdownLinks();
+                    general.clickMoreDropdown(sectionI, general.getSectionDom(sectionI), function(s, moreId) {
+                        links = getDropdownLinks(moreId);
                         for (var i = 0; i < links.length; i++) {
                             // console.log("compare", i, links[i].innerText, names[0]);
                             if (links[i].innerText == names[0] && names.length > 0) {
@@ -90,17 +97,24 @@ function cleanTabsFromDropdown(index, links, names, sectionI) {
     }, 1000);
 }
 
-function sectionDropdownTabs(sectionI) {
-    var links = getDropdownLinks();
-    dropdownTabsNames = [];
-    links.each(function(i) {
+function sectionDropdownTabs(sectionI, moreId) {
+    var links = getDropdownLinks(moreId);
+    // advertisers removed content "Whom you've hidden" should be skipped
+    // assumes: that link is in dropdown and is always last
+    // if Removed Interests are in the dropdown
+    // also assumes: it's last
+    if (sectionI === 1 || interestsMoreDropDown === true) {
+        links = _.take(links, links.length - 1);
+    };
+    var dropdownTabsNames = [];
+    for (var i = 0; i < links.length; i++) {
         var name = links[i].innerText;
         dropdownTabsNames.push(name);
         if (i == links.length - 1) {
             console.log("Dropdown links", dropdownTabsNames);
             cleanTabsFromDropdown(0, links, dropdownTabsNames, sectionI);
         }
-    });
+    }
 }
 
 // Iterate through clicking the tabs
@@ -111,21 +125,23 @@ function interestsTabs(i, tabs, section) {
     clickSeeMore(secNo, function() {
         var likes = section.find("._2b2n");
         console.log(title, likes.length);
-        if (likes.length > 0) {
-            general.actuallyClick(secNo, 0, likes, [], function(d) {
-                addToTemp(secNo, title, d);
-                console.log("done", title);
-                i++;
-                if (i < tabs.length) {
-                    interestsTabs(i, tabs, section);
-                } else {
-                    console.log("Done Interests tabs");
+        general.actuallyClick(secNo, 0, likes, [], function(d) {
+            // after done with clicking
+            addToTemp(secNo, title, d);
+            console.log("done", title);
+            i++;
+            if (i < tabs.length) {
+                interestsTabs(i, tabs, section);
+            } else {
+                console.log("Done Interests tabs");
+                if (interestsMoreDropDown) {
                     // after clicking the dropdown, go through them
-                    // FIX either remove the last link from tabs array or from dropdownlinks, i.e. removed tab
                     general.clickMoreDropdown(0, section, sectionDropdownTabs);
+                } else {
+                    recordCleanData(0);
                 }
-            });
-        };
+            }
+        });
     });
 }
 
@@ -152,19 +168,13 @@ function adsTabs(i, tabs, section) {
             } else {
                 console.log("Done Advertisers tabs");
                 // after clicking the dropdown, go through them
-                // FIX either remove the last link from tabs array or from dropdownlinks, i.e. removed tab
                 general.clickMoreDropdown(1, section, sectionDropdownTabs);
             }
         }
-        if (items.length > 0) {
-            general.actuallyClick(secNo, 0, items, [], function(d) {
-                addToTemp(secNo, title, d);
-                logic();
-            });
-        } else {
-            // sometimes tabs won't contain boxes
+        general.actuallyClick(secNo, 0, items, [], function(d) {
+            addToTemp(secNo, title, d);
             logic();
-        };
+        });
     });
 }
 
@@ -190,34 +200,46 @@ function infoTabs(i, tabs, section) {
                 // no dropdown as of now
             }
         }
-        if (items.length > 0) {
-            general.actuallyClick(secNo, 0, items, [], function(d) {
-                addToTemp(secNo, title, d);
-                logic();
-            });
-        } else {
-            // sometimes tabs won't contain boxes, so just move on
+        general.actuallyClick(secNo, 0, items, [], function(d) {
+            addToTemp(secNo, title, d);
             logic();
-        };
+        });
     });
 }
 
 module.exports = {
-    cleanInterests: function() {
+    cleanInterests: function(executedIn) {
         console.log(">>> Cleaning all the interests.");
         var interestsSection = general.getSectionDom(0);
         var tabs = interestsSection.find("._4xjz");
-        // click first tab + get the current dom again, so clicking is aligned with records saved
-        tabs.on("click", function() {
-            tabs.off();
-            setTimeout(function() {
-                interestsSection = general.getSectionDom(0);
-                tabs = interestsSection.find("._4xjz");
-                console.log(tabs);
+        // check if removed content is in the dropdown
+        var moreExists = interestsSection.find("._1b0").length;
+        if (moreExists > 0) {
+            interestsMoreDropDown = true;
+            // if there is a more dropdown and user browses - order gets messed up
+            // click first tab + get the current dom again, so clicking is aligned with records saved
+            tabs.on("click", function() {
+                tabs.off();
+                setTimeout(function() {
+                    interestsSection = general.getSectionDom(0);
+                    tabs = interestsSection.find("._4xjz");
+                    interestsTabs(0, tabs, interestsSection);
+                    executedIn(tabs.length * 2000 + 1000 + 3 * 2000); // estimated time to execute
+                }, 800);
+            });
+            tabs[0].click();
+        } else {
+            // if there is no dropdown then Removed Interests should be last tab
+            // skip it by removing it
+            tabs = _.take(tabs, tabs.length - 1);
+            if (tabs.length > 0) {
                 interestsTabs(0, tabs, interestsSection);
-            }, 1000);
-        });
-        tabs[0].click();
+                executedIn(tabs.length * 2000); // estimated time to execute
+            } else {
+                console.log("Nothing to clean");
+                executedIn(0);
+            }
+        }
     },
     cleanAdvertisers: function() {
         console.log(">>> Cleaning advertisers.");
@@ -229,9 +251,8 @@ module.exports = {
             setTimeout(function() {
                 adsSection = general.getSectionDom(1);
                 tabs = adsSection.find("._4jq5");
-                console.log(tabs);
                 adsTabs(0, tabs, adsSection);
-            }, 1000);
+            }, 800);
         });
         tabs[0].click();
     },
@@ -244,11 +265,12 @@ module.exports = {
     },
     reAddInterests: function() {
         var secNo = 0;
-        console.log("Readding all the interests.");
+        console.log(">>> Readding all the interests.");
         var interestsSection = general.getSectionDom(secNo);
 
         // only time the Removed Interests is a tab (not hidden in More) is when all Interests are removed
         // then Removed Interests is the first tab
+        // other option: just click tab and then click Readd button
         var boxes = interestsSection.find("._2b2m");
         // check first tab
         if (boxes.length > 0) {

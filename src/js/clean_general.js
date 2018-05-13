@@ -20,9 +20,10 @@ module.exports = {
             more.off();
             // wait for the menu to load
             setTimeout(function() {
-                console.log("Clicked More");
-                callback(sectionI);
-            }, 1500);
+                var id = more.parent("a")[0].id;
+                console.log("Clicked More", id);
+                callback(sectionI, id);
+            }, 800);
         });
         more.click();
     },
@@ -41,20 +42,43 @@ module.exports = {
                     break;
             }
             parent.css("color", "red");
-            clickedArr.push(parent.text());
             // click to remove/clean this category/advertiser
             if (window.debugMode === false) {
+                // x-remove button or dropdown button (advertiser section)
                 buttons[index].click();
             };
-            index++;
-            if (index < buttons.length) {
-                setTimeout(function() {
-                    self.actuallyClick(section, index, buttons, clickedArr, callback);
-                    // create a delay so the click can be registered
-                }, 200);
-            } else {
-                callback(clickedArr);
-            }
+
+            // rest of function after time out, to make sure the dropdown menu was loaded
+            setTimeout(function() {
+                var otherButtons = $("span._o6j");
+                // assumes: so far only advertisers will have the dropdown to remove sth
+                if (otherButtons.length > 0 && section === 1) {
+                    // text stating ads from this advertiser are hidden
+                    var clickedAdvertiserHidden = $(buttons[index]).parents("._2b2e").find("._qm-").length;
+                    // since the menus will appear one by one after the buttons of each element is clicked
+                    if (clickedAdvertiserHidden === 0) {
+                        otherButtons[clickedArr.length].click();
+                        clickedArr.push(parent.text());
+                    } else {
+                        // hide menu again
+                        $("body").click();
+                    }
+                } else {
+                    // no otherButtons means just x-remove, add the text to arr
+                    clickedArr.push(parent.text());
+                }
+
+                index++;
+                if (index < buttons.length) {
+                    setTimeout(function() {
+                        // click next
+                        self.actuallyClick(section, index, buttons, clickedArr, callback);
+                        // create a delay so the click can be registered
+                    }, 200);
+                } else {
+                    callback(clickedArr);
+                }
+            }, 50);
         } else {
             callback(clickedArr);
         }
