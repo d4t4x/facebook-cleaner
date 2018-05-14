@@ -59,6 +59,14 @@ function generalListeners() {
             case "saveItem":
                 db.items.add(req.data);
                 break;
+            case "rationale":
+                db.items.where({ postId: req.data.id }).last(function(item) {
+                    if (item.rationale != undefined)
+                        console.log("Update rationale", item, req.data);
+                    db.items.update(item.id, { rationale: req.data.rationale });
+                }).catch(function(error) {
+                    console.error(error.stack || error);
+                });
             case "updateAlarm":
                 chrome.alarms.get("clean-alarm", function(alarm) {
                     console.log(alarm);

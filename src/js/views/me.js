@@ -90,9 +90,15 @@ function showItems(arr) {
 
             stream.find("#" + time.year() + time.format("MMMM")).append(removeDiv);
         } else {
-            console.log("Posters", arr[i].posters, "last", _.last(arr[i].posters));
+            // console.log("Posters", arr[i].posters, "last", _.last(arr[i].posters));
             var name = arr[i].origPoster === undefined ? _.last(arr[i].posters).name : arr[i].origPoster.name,
                 activity = name === arr[i].postActivity ? "" : arr[i].postActivity;
+
+            if (arr[i].rationale != "" && arr[i].rationale != undefined) {
+                var json = JSON.parse(arr[i].rationale.replace("for (;;);", ""));
+                var html = json.jsmods.markup[0][1].__html;
+                var rationaleT = $(html).find("._4uoz").text();
+            }
 
             stream.find("#" + time.year() + time.format("MMMM"))
                 .append($("<div>", { class: "item", id: "d" + arr[i].unix })
@@ -103,6 +109,7 @@ function showItems(arr) {
                     .append($("<p>").text(_.join(arr[i].postDesc, "\n\n")))
                     .append($("<p>").text(_.join(arr[i].origLink, "\n\n")))
                     .append($("<p>").text(_.join(arr[i].origDesc, "\n\n")))
+                    .append($("<p>", {class: "rationale"}).text(rationaleT))
                 );
         }
         if (i === arr.length - 1) {

@@ -139,8 +139,14 @@ button:focus {
         .name {
             font-weight: bold;
         }
+        .rationale {
+            margin: 20px 0 0 0;
+            padding: 10px;
+            background-color: #ddd;
+        }
     }
-    h1, h2 {
+    h1,
+    h2 {
         color: $purple;
     }
     .clean {

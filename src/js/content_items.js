@@ -5,18 +5,18 @@ var helper = require("./content_helpers.js"),
         getEmptyObj: function() {
             return {
                 // all array unless def. only one value
-                "postId": undefined, // some id, probably not the post id
-                "postUrl": undefined, // url of the user's post you see, could be a shared post
-                "postActivity": undefined, // basically why you are seeing this post
+                "postId": "", // some id, probably not the post id
+                "postUrl": "", // url of the user's post you see, could be a shared post
+                "postActivity": "", // basically why you are seeing this post
                 "posters": [], // users that are responsible for you seeing that post with their ids and type (page or user)
-                "postImg": undefined, // image or thumbnail of that post
+                "postImg": "", // image or thumbnail of that post
                 "postImgRaw": [], // img data in base64
                 "postDesc": [], // what did they say
                 "origLink": [], // what they shared (if at all)
-                "origPoster": undefined, // who they shared it from (if at all)
+                "origPoster": "", // who they shared it from (if at all)
                 "origDesc": [], // what the shared content says (if at all)
-                "rationale": undefined,
-                "sponsored": undefined,
+                "rationale": "",
+                "sponsored": "",
                 "timestamp": helper.now(),
                 "unix": helper.unix()
             };
@@ -132,6 +132,7 @@ module.exports = {
                 // and also is not in the array from this session yet
                 sessionItems.push({
                     id: postId,
+                    ajaxify: "",
                     rationale: ""
                 });
                 thisEl.addClass("highlight");
@@ -144,48 +145,58 @@ module.exports = {
         this.filterSponsored();
     },
     rationaleCycle: function() {
-        setInterval(function() {
+        function getRationale(arrIndex) {
             // find the first empty one
             var index = _.findIndex(sessionItems, { 'rationale': "" });
-            var obj = sessionItems[index];
+            console.log(sessionItems);
             // if there is still an element in queue without rationale
             if (index >= 0) {
+                var obj = sessionItems[index];
                 var menu = $("#" + obj.id).find("._4xev._p")[0];
                 var menuId = menu.id;
                 menu.click(); // open menu
-                menu.click(); // close menu
+
                 console.log(index, obj.id, menuId);
                 setTimeout(function() {
                     // https://github.com/WhoTargetsMe/Who-Targets-Me/blob/master/src/daemon/page/FacebookAdvertObserver.js
-                    var ajaxify = $(".uiLayer[data-ownerid='" + menuId + "']").find("a[data-feed-option-name='FeedAdSeenReasonOption']").attr("ajaxify");
-                    // console.log(ajaxify);
+                    // sometimes no data-ownerid attribute in triggered uiLayer menu
+                    // then try the last uiLayer as it gets updated and pushed to the button after click
+                    var layer = $(".uiLayer[data-ownerid='" + menuId + "']");
+                    if (layer.length === 0) {
+                        layer = $(".uiLayer").last();
+                    }
+                    var ajaxify = layer.find("a[data-feed-option-name='FeedAdSeenReasonOption']").attr("ajaxify");
+
+                    // menu.click(); // close menu
                     if (ajaxify === undefined) {
-                        sessionItems[index].rationale = "undefined";
-                        console.log("ajaxify", ajaxify, sessionItems);
+                        sessionItems[index].ajaxify = undefined;
+                        sessionItems[index].rationale = undefined;
                     } else {
-                        var advertId = /id=\s*(.*?)\s*&/.exec(ajaxify);
-                        // console.log(advertId[1], advertId);
+                        sessionItems[index].ajaxify = ajaxify;
+                        // var advertId = /id=\s*(.*?)\s*&/.exec(ajaxify)[1];
                         $.ajax({
                             url: "https://www.facebook.com" + ajaxify,
                             // url: "https://www.facebook.com/ads/preferences/dialog/?id=" + advertId + "&optout_url=http%%3A%%2F%%2Fwww.facebook.com%%2Fabout%%2Fads&page_type=16&show_ad_choices=0&dpr=1&__a=1",
                             type: "GET",
                             dataType: 'text',
                             xhrFields: {
-                                withCredentials: true // include the user info
+                                withCredentials: true // include the user cookie to make call on behalf
                             }
                         }).done(function(data) {
-                            console.log(data);
+                            console.log("rationale dataaaa", data.length);
                             sessionItems[index].rationale = data;
+                            helper.sendToBg("rationale", { id: obj.id, rationale: data });
                             console.log(obj.id, "rationale saved", sessionItems);
+                            // FIX error handling missing
                         });
-                        // FIX error handling missing
                     }
-                }, 600); // make sure menu was opened
+                }, 500); // make sure menu was opened
             }
-        }, 5000);
+        };
+        setInterval(getRationale, 15000);
     },
     init: function() {
         this.updateNewsFeed();
-        this.rationaleCycle();
+        setTimeout(this.rationaleCycle, 5000);
     }
 };
