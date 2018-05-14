@@ -119,19 +119,21 @@ module.exports = {
     },
     filterSponsored: function() {
         var posts = this.getPagePosts();
-        // example how other find ads
         // https://github.com/WhoTargetsMe/Who-Targets-Me/blob/master/src/daemon/page/FacebookAdvertObserver.js
         posts.each(function() {
             var thisEl = $(this),
                 dateOrSponsored = thisEl.find("._5pcp"),
                 postActiv = thisEl.find("h5").length;
-                hasSponsored = dateOrSponsored.children().find("span.timestampContent").length, // 0, there is no date timestamp
+            hasSponsored = dateOrSponsored.children().find("span.timestampContent").length, // 0, there is no date timestamp
                 postId = thisEl.closest("div._5jmm")[0].attributes.id.value; // some id to distinguish the posts
 
-            if (hasSponsored === 0 && postActiv > 0 && sessionItems.indexOf(postId) === -1) {
+            if (hasSponsored === 0 && postActiv > 0 && _.map(sessionItems, 'id').indexOf(postId) === -1) {
                 // has "Sponsored" text and is indeed a post, not people you may now etc.
                 // and also is not in the array from this session yet
-                sessionItems.push(postId);
+                sessionItems.push({
+                    id: postId,
+                    rationale: ""
+                });
                 thisEl.addClass("highlight");
                 logic.populateObj(thisEl, postId, dateOrSponsored.text());
             };
@@ -141,7 +143,49 @@ module.exports = {
         newsfeedEl = $("#stream_pagelet");
         this.filterSponsored();
     },
+    rationaleCycle: function() {
+        setInterval(function() {
+            // find the first empty one
+            var index = _.findIndex(sessionItems, { 'rationale': "" });
+            var obj = sessionItems[index];
+            // if there is still an element in queue without rationale
+            if (index >= 0) {
+                var menu = $("#" + obj.id).find("._4xev._p")[0];
+                var menuId = menu.id;
+                menu.click(); // open menu
+                menu.click(); // close menu
+                console.log(index, obj.id, menuId);
+                setTimeout(function() {
+                    // https://github.com/WhoTargetsMe/Who-Targets-Me/blob/master/src/daemon/page/FacebookAdvertObserver.js
+                    var ajaxify = $(".uiLayer[data-ownerid='" + menuId + "']").find("a[data-feed-option-name='FeedAdSeenReasonOption']").attr("ajaxify");
+                    // console.log(ajaxify);
+                    if (ajaxify === undefined) {
+                        sessionItems[index].rationale = "undefined";
+                        console.log("ajaxify", ajaxify, sessionItems);
+                    } else {
+                        var advertId = /id=\s*(.*?)\s*&/.exec(ajaxify);
+                        // console.log(advertId[1], advertId);
+                        $.ajax({
+                            url: "https://www.facebook.com" + ajaxify,
+                            // url: "https://www.facebook.com/ads/preferences/dialog/?id=" + advertId + "&optout_url=http%%3A%%2F%%2Fwww.facebook.com%%2Fabout%%2Fads&page_type=16&show_ad_choices=0&dpr=1&__a=1",
+                            type: "GET",
+                            dataType: 'text',
+                            xhrFields: {
+                                withCredentials: true // include the user info
+                            }
+                        }).done(function(data) {
+                            console.log(data);
+                            sessionItems[index].rationale = data;
+                            console.log(obj.id, "rationale saved", sessionItems);
+                        });
+                        // FIX error handling missing
+                    }
+                }, 600); // make sure menu was opened
+            }
+        }, 5000);
+    },
     init: function() {
         this.updateNewsFeed();
+        this.rationaleCycle();
     }
 };

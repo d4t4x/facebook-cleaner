@@ -105,6 +105,9 @@ function showItems(arr) {
                     .append($("<p>").text(_.join(arr[i].origDesc, "\n\n")))
                 );
         }
+        if (i === arr.length - 1) {
+            $("#loading").hide();
+        }
     }
 
 }
@@ -118,12 +121,18 @@ var main = {
             console.error(err.stack || err);
         }).finally(function() {
             console.log("%c[DB][<<] opened", helper.clog.magenta);
-            db.items.toArray(function(arr) {
+            var arr = [];
+            var cleanArr = [];
+            db.cleaning.each(function(d, i) {
+                cleanArr.push(d);
+            });
+            db.items.count(function(count) {
                 // check if db has content
-                if (arr.length > 0) {
-                    $("#records").text(arr.length + " record(s) in your database");
-                    db.cleaning.toArray(function(cleanArr) {
-                        if (cleanArr.length > 0) {
+                if (count > 0) {
+                    $("#records").text(count + " record(s) in your database");
+                    db.items.each(function(d, i) {
+                        arr.push(d);
+                        if (arr.length === count) {
                             showItems(_.concat(arr, cleanArr));
                             var lastTime = moment(_.last(cleanArr).timestamp);
                             var now = moment();
@@ -132,13 +141,12 @@ var main = {
                             if (diff > 7) {
                                 $("#cleanings").css("color", "red");
                             };
-                        } else {
-                            showItems(arr);
-                        };
-                    })
+                        }
+                    });
                 } else {
                     $("#records").text("You haven't collected any sponsored posts yet.");
                 }
+
             });
         });
     },
