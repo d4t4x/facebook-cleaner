@@ -27,7 +27,7 @@ function showItems(arr) {
 
     var stream = $("#stream");
     arr = sortedArr.reverse();
-    console.log(arr);
+    // console.log(arr);
 
     // create divs for each year and month
     var timePassed = now.diff(startDate, 'years');
@@ -39,7 +39,7 @@ function showItems(arr) {
         var monthArr = [];
         for (var m = 11; m >= 0; m--) {
             var date = moment([y, m, 1]);
-            console.log(startDate.format("YYYY MMMM DD"), date.format("YYYY MMMM DD"), now.diff(date, "days"), date.diff(startDate, "months"));
+            // console.log(startDate.format("YYYY MMMM DD"), date.format("YYYY MMMM DD"), now.diff(date, "days"), date.diff(startDate, "months"));
             // check for only past months and after the first ad was recorded
             if (now.diff(date, "days") >= 0 && date.diff(startDate, "months") >= 0) {
                 monthArr.push(date.format("MMMM"));
@@ -98,6 +98,8 @@ function showItems(arr) {
                 var json = JSON.parse(arr[i].rationale.replace("for (;;);", ""));
                 var html = json.jsmods.markup[0][1].__html;
                 var rationaleT = $(html).find("._4uoz").text();
+            } else {
+                var rationaleT = undefined;
             }
 
             stream.find("#" + time.year() + time.format("MMMM"))

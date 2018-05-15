@@ -8,8 +8,8 @@ $magenta: #FF00B1;
 $yellow: #FFFF00;
 $red: #e91e53;
 $w2: #f5f5f5;
-$purple: #392177;
-$pink: #c667c1;
+$purple: #4e3677;
+$pink: #d992f2;
 $baseFontSize: 12;
 $fontFamily: "Menlo",
 monospace;
@@ -143,6 +143,9 @@ button:focus {
             margin: 20px 0 0 0;
             padding: 10px;
             background-color: #ddd;
+            &:empty {
+                padding: 0;
+            }
         }
     }
     h1,
