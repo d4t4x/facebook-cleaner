@@ -153,7 +153,7 @@ var main = {
                         }
                     });
                 } else {
-                    $("#records").text("You haven't collected any sponsored posts yet.");
+                    $("#stream h1").text("You haven't collected any sponsored posts yet.").removeClass("loading");
                 }
 
             });
