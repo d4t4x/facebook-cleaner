@@ -36,7 +36,6 @@
         "css": ["css/ads-overlay.css"],
         "run_at": "document_idle"
     }],
-    "options_page": "views/options.html",
     "homepage_url": "http://dataselfie.it",
     "manifest_version": 2,
     "omnibox":
