@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with FUZZIFY ME.  If not, see <http://www.gnu.org/licenses/>.
 
-var greeting = "HELLO TARGET ___ <3",
+var greeting = "HELLO Fuzzify Me <3",
     devMode = true,
     db,
     session = false,

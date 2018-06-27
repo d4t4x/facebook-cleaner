@@ -25,18 +25,19 @@
     },
     "content_scripts": [
     {
-        "matches": ["*://*.facebook.com/*", "*://*.facebook.com/?*"],
-        "js": ["js/content.js"],
-        "css": ["css/feed-overlay.css"],
-        "run_at": "document_idle"
-    },
-    {
-        "matches": ["*://*.facebook.com/ads/preferences/*"],
+        "matches": ["https://www.facebook.com/ads/preferences", "http://www.facebook.com/ads/preferences"],
         "js": ["js/clean.js"],
         "css": ["css/ads-overlay.css"],
         "run_at": "document_idle"
+    },
+    {
+        "exclude_matches": ["https://www.facebook.com/ads/preferences", "http://www.facebook.com/ads/preferences"],
+        "matches": ["*://*.facebook.com/*"],
+        "js": ["js/content.js"],
+        "css": ["css/feed-overlay.css"],
+        "run_at": "document_idle"
     }],
-    "homepage_url": "http://dataselfie.it",
+    "homepage_url": "https://github.com/d4t4x/facebook-cleaner",
     "manifest_version": 2,
     "omnibox":
     {
