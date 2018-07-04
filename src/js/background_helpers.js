@@ -17,8 +17,8 @@ module.exports = {
             console.log("%c[Permissions][<<] " + _.join(p.permissions, " - "), clog.grey);
         });
     },
-    sendToContent: function(tabid) {
-        chrome.tabs.sendMessage(tabid, { webRequest: 1 });
+    sendToContent: function(tabid, num) {
+        chrome.tabs.sendMessage(tabid, { webRequest: num });
     },
     saveBackup: function(data, name) {
         console.log("[DB][<<] backup", data);

@@ -19,7 +19,7 @@ var helper = require("./content_helpers.js"),
         listeners: function() {
             chrome.runtime.onMessage.addListener(function(req, sen, res) {
                 if (req.webRequest) {
-                    console.log(">>> New content loading.");
+                    console.log(">>> New content loading.", req.webRequest);
                     items.updateNewsFeed();
                 }
             });
@@ -31,14 +31,14 @@ var start = function() {
     // this class can change anytime
     // could be the reason why tracking doesn't work
     var info = $("#pagelet_bluebar a._2s25").has("img");
-    if (info.length > 0) {
+    if (info.length > 0 && (window.location.pathname.length === 1 || window.location.pathname.substring(0, 2) === "/?" )) {
         // this is the beginning, bg only starts tracking
         // if profle img is there / user is logged in
         console.log("Tracking on this page.");
         kickoff.listeners();
         items.init();
     } else {
-        console.log("Boo! No tracking on this page. Only activity in your newsfeed are tracked.");
+        console.log("Boo! No tracking on this page. Only activity in your newsfeed is tracked.");
     };
 }
 

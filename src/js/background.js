@@ -91,8 +91,9 @@ function generalListeners() {
         var dif = info.timeStamp - lastWebReq;
         // limit the number of notifications sent to content
         if (dif > 1500 || lastWebReq == 0) {
-            helper.sendToContent(info.tabId);
-            console.log("%c[>>] new webRequest", helper.clog.fb);
+            var randNum = Math.random() * 1000;
+            helper.sendToContent(info.tabId, randNum);
+            console.log("%c[>>] new webRequest " + randNum, helper.clog.fb);
         }
         lastWebReq = info.timeStamp;
     }, {

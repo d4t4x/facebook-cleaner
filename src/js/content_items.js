@@ -148,7 +148,7 @@ module.exports = {
         function getRationale(arrIndex) {
             // find the first empty one
             var index = _.findIndex(sessionItems, { 'rationale': "" });
-            console.log(sessionItems);
+            console.log("sessionItems", sessionItems);
             // if there is still an element in queue without rationale
             if (index >= 0) {
                 var obj = sessionItems[index];
@@ -171,8 +171,9 @@ module.exports = {
                     if (ajaxify === undefined) {
                         sessionItems[index].ajaxify = undefined;
                         sessionItems[index].rationale = undefined;
-                    } else {
+                    } else if (ajaxify.lastIndexOf("/ads/preferences/dialog/?", 0) === 0) {
                         sessionItems[index].ajaxify = ajaxify;
+                        // console.log("ajaxify", ajaxify);
                         // var advertId = /id=\s*(.*?)\s*&/.exec(ajaxify)[1];
                         $.ajax({
                             url: "https://www.facebook.com" + ajaxify,
@@ -183,20 +184,23 @@ module.exports = {
                                 withCredentials: true // include the user cookie to make call on behalf
                             }
                         }).done(function(data) {
-                            console.log("rationale dataaaa", data.length);
+                            console.log("%crationale dataaaa " + data.length + " " + obj.id , "color: #c667c1");
                             sessionItems[index].rationale = data;
                             helper.sendToBg("rationale", { id: obj.id, rationale: data });
-                            console.log(obj.id, "rationale saved", sessionItems);
                             // FIX error handling missing
                         });
                     }
                 }, 500); // make sure menu was opened
             }
         };
-        setInterval(getRationale, 15000);
+        // get rationale once at the beginning
+        getRationale();
+        // then interval to get new rationales
+        setInterval(getRationale, 30000);
     },
     init: function() {
         this.updateNewsFeed();
-        setTimeout(this.rationaleCycle, 5000);
+        // wait a bit before starting rationaleCycle
+        setTimeout(this.rationaleCycle, 10000);
     }
 };

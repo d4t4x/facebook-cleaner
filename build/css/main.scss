@@ -139,12 +139,19 @@ button:focus {
         .name {
             font-weight: bold;
         }
-        .rationale {
-            margin: 20px 0 0 0;
+        .rationale, .rationale-pre {
+            margin: 0;
             padding: 10px;
             background-color: #ddd;
             &:empty {
                 padding: 0;
+            }
+        }
+        .rationale-pre {
+            margin: 20px 0 0 0;
+            font-weight: bold;
+            &:empty {
+                margin: 0;
             }
         }
     }

@@ -101,7 +101,7 @@ function showItems(arr) {
             } else {
                 var rationaleT = undefined;
             }
-
+            var rationalePre = rationaleT ? "This is what Facebook states about \"Why you are seeing this ad\"" : undefined;
             stream.find("#" + time.year() + time.format("MMMM"))
                 .append($("<div>", { class: "item", id: "d" + arr[i].unix })
                     .append($("<p>", { class: "name" }).text(name))
@@ -111,6 +111,7 @@ function showItems(arr) {
                     .append($("<p>").text(_.join(arr[i].postDesc, "\n\n")))
                     .append($("<p>").text(_.join(arr[i].origLink, "\n\n")))
                     .append($("<p>").text(_.join(arr[i].origDesc, "\n\n")))
+                    .append($("<p>", {class: "rationale-pre"}).text(rationalePre))
                     .append($("<p>", {class: "rationale"}).text(rationaleT))
                 );
         }
@@ -160,7 +161,8 @@ var main = {
         });
     },
     listener: function() {
-        $('#go-to-options').click(function() {
+        $('#go-to-options').click(function(e) {
+            e.preventDefault();
             if (chrome.runtime.openOptionsPage) {
                 chrome.runtime.openOptionsPage();
             } else {

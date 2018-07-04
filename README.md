@@ -19,3 +19,11 @@ Built for both Chrome & Firefox.
 2. Go to `chrome://extensions/` (type in address bar) and click `"Load Unpacked"`. Then you'll want to pick the "build" folder inside the project folder.
 3. If you have an ad blocker, you'll need to disable it while you browse Facebook.
 4. Click the purple icon in the toolbar and you'll see the full visual timeline of all the ads & cleaning history. It will take a few Facebook sessions to collect enough data, so at first this will appear empty.
+
+## Limitations
+
+- does not work with Ad Blocker enabled on Facebook.com
+- does not work in Private/Incognito window
+- request for rationale of "Why am I seeing this ad" starts after a few seconds and then only gets called every 30 seconds to avoid getting blocked
+
+
