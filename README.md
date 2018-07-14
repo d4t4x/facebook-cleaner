@@ -26,4 +26,12 @@ Built for both Chrome & Firefox.
 - does not work in Private/Incognito window
 - request for rationale of "Why am I seeing this ad" starts after a few seconds and then only gets called every 30 seconds to avoid getting blocked
 
+## Run locally and pack extension
+
+- ```npm install```
+- to make a build (folder) from src ```npm run build```
+- to make a build and watch for changes ```npm run buildw```
+- to make a build and minify etc (see webpack.config.js) ```npm run buildprod```
+    - use this to reproduce the code submitted to Chrome Web Store and Firefox Add-ons
+    - for both Chrome and Firefox the content of the build folder is compressed and submitted to the developer platform
 

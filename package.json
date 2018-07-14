@@ -1,7 +1,7 @@
 {
-  "name": "ds_dev_env",
+  "name": "fm_dev",
   "version": "1.0.0",
-  "description": "Dev environment for Data Selfie.",
+  "description": "Dev environment for Fuzzify.me",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
