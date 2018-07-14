@@ -1,7 +1,5 @@
 # Fuzzify.me
 
-*A work in progress*
-
 A browser extension that helps you understand how advertisers target you on Facebook. With one click, the tool automatically runs a housecleaning, denying advertisers access to all the categories Facebook is constantly generating about you. In the timeline to the right, you can keep track of what categories have been cleared out and what targeted ads you're seeing over time.
 
 Built for both Chrome & Firefox.
@@ -25,6 +23,10 @@ Built for both Chrome & Firefox.
 - does not work with Ad Blocker enabled on Facebook.com
 - does not work in Private/Incognito window
 - request for rationale of "Why am I seeing this ad" starts after a few seconds and then only gets called every 30 seconds to avoid getting blocked
+
+## Privacy Policy
+
+Can be found here: https://github.com/d4t4x/facebook-cleaner/blob/master/PRIVACY_POLICY.md
 
 ## Run locally and pack extension
 
