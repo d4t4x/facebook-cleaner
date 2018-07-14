@@ -1,4 +1,4 @@
-# FUZZIFY ME
+# Fuzzify.me
 
 *A work in progress*
 

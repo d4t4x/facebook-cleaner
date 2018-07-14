@@ -1,19 +1,19 @@
-// This file is part of FUZZIFY ME.
+// This file is part of Fuzzify.me.
 
-// FUZZIFY ME is free software: you can redistribute it and/or modify
+// Fuzzify.me is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // any later version.
 
-// FUZZIFY ME is distributed in the hope that it will be useful,
+// Fuzzify.me is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with FUZZIFY ME.  If not, see <http://www.gnu.org/licenses/>.
+// along with Fuzzify.me. If not, see <http://www.gnu.org/licenses/>.
 
-var greeting = "HELLO Fuzzify Me <3",
+var greeting = "HELLO Fuzzify.me <3",
     devMode = true,
     db,
     session = false,
@@ -26,7 +26,7 @@ function generalListeners() {
         chrome.browserAction.setBadgeText({ text: "" });
     });
     chrome.runtime.onUpdateAvailable.addListener(function(details) {
-        chrome.browserAction.setBadgeText({ text: "!" });
+        chrome.browserAction.setBadgeText({ text: "new" });
         chrome.runtime.reload();
     });
     chrome.runtime.onInstalled.addListener(function(details) {
@@ -51,10 +51,6 @@ function generalListeners() {
                 } else {
                     helper.importError(sender.tab.id);
                 }
-                break;
-            case "delete":
-                helper.resetDB(db, initDB, sender.tab.id);
-                chrome.storage.local.clear(initOptions);
                 break;
             case "saveItem":
                 db.items.add(req.data);
@@ -93,7 +89,7 @@ function generalListeners() {
         if (dif > 1500 || lastWebReq == 0) {
             var randNum = Math.random() * 1000;
             helper.sendToContent(info.tabId, randNum);
-            console.log("%c[>>] new webRequest " + randNum, helper.clog.fb);
+            console.log("%c[>>] new webRequest " + randNum + " " + info.tabId, helper.clog.fb);
         }
         lastWebReq = info.timeStamp;
     }, {

@@ -25,10 +25,10 @@ module.exports = {
         var blob = new Blob([JSON.stringify(data, null, 2)], { type: "text/json;charset=utf-8" })
         chrome.downloads.download({
             url: URL.createObjectURL(blob),
-            filename: "dataselfie_" + name + "_" + moment().format('YYYY-MM-DD') + ".json",
+            filename: "fuzzifyme_" + name + "_" + moment().format('YYYY-MM-DD') + ".json",
             conflictAction: "overwrite", // "uniquify" / "overwrite" / "prompt"
             saveAs: true // true gives save-as dialogue
-        }, this.downloadBar());
+        });
     },
     backup: function(_db) {
         var self = this;
@@ -80,26 +80,5 @@ module.exports = {
             console.error(err.stack);
             self.importError();
         });
-    },
-    resetDB: function(_db, _callback, tabid) {
-        _db.delete().then(function() {
-            console.log("%c[DB][<<] deleted", clog.magenta);
-        }).catch(function(err) {
-            console.error("%cCould not delete [DB][<<]", clog.magenta);
-        }).finally(function() {
-            if (_callback) { _callback(); };
-            chrome.tabs.sendMessage(tabid, {
-                displaydata: true,
-                msg: "Database was deleted."
-            });
-        });
-    },
-    escapeString: function(str) {
-        // return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-        return str.replace(/"/g, '\\"');
-    },
-    replaceAll: function(str, find, replace) {
-        // http://stackoverflow.com/a/1144788
-        return str.replace(new RegExp(this.escapeString(find), 'g'), replace);
     }
 }
