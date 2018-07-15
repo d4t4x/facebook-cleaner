@@ -1,7 +1,7 @@
 {
     "name": "Fuzzify.me",
     "version": "1.0",
-    "description": "Collect content targeted to you and cleans your ads preferences, so you can compare what's changed.",
+    "description": "Cleans out a Facebook user's ad preferences and provides a stream of ads that user receives",
     "background":
     {
         "scripts": ["js/background.js"]
@@ -42,9 +42,5 @@
         "page": "views/options.html"
     },
     "homepage_url": "https://github.com/d4t4x/facebook-cleaner",
-    "manifest_version": 2,
-    "omnibox":
-    {
-        "keyword": "fm"
-    }
+    "manifest_version": 2
 }
