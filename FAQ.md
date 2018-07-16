@@ -1,6 +1,7 @@
 # FAQ
 
 ## Why is it not working?
+- First of all, breathe, if your internet connection is not the fastest, it might take a few seconds for the extension to start. This is because it always waits for Facebook to load all of their content first.
 - It doesn't work with an Ad Blocker enabled on Facebook.com.
 - Is doesn't work in a Private/Incognito window.
 
