@@ -2,7 +2,8 @@
 
 [English](#en) | [Português](#pt)
 
----
+<br>
+<br>
 
 ## <a id="en"></a> Privacy Policy
 
@@ -24,6 +25,9 @@ In the Ads Stream the extension also shows the information Facebook provides abo
 
 There is a possibility that this Privacy Policy will be adapted in the future, to clarify or modify it in response to feature changes or user feedback. You can check the privacy policy for changes. You can refer to the Last updated timestamp at the bottom of the page.
 
+<br>
+<br>
+
 ## <a id="pt"></a> Política de Privacidade
 
 A privacidade de todes que utilizem o fuzzify.me é importante para nós, por isso explicamos aqui direitinho como a ferramenta funciona em relação aos seus dados pessoais:
@@ -44,8 +48,9 @@ Na timeline de anúncios, a extensão também exibe a informação que o Faceboo
 
 Existe a possibilidade desta política de privacidade ser adaptada no futuro, seja para clarificar ou modificar qualquer aspecto em resposta a feedbacks de quem a utiliza ou mudanças em funcionalidades da ferramenta. Você pode checar eventuais mudanças e observar a data da última atualização abaixo.
 
----
+<br>
+<br>
 
-*Última atualização: 30 de julho de 2018*
+*Last updated: 30.07.2018*
 
-*Last updated: 30 July 2018*
+*Última atualização: 30.07.2018*

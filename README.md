@@ -20,7 +20,11 @@ Built for both Chrome & Firefox.
 
 ## [FAQ](https://github.com/d4t4x/facebook-cleaner/blob/master/FAQ.md)
 
+Available in [English](https://github.com/d4t4x/facebook-cleaner/blob/master/FAQ.md#en) and [Português](https://github.com/d4t4x/facebook-cleaner/blob/master/FAQ.md#pt).
+
 ## [Privacy Policy](https://github.com/d4t4x/facebook-cleaner/blob/master/PRIVACY_POLICY.md)
+
+Available in [English](https://github.com/d4t4x/facebook-cleaner/blob/master/FAQ.md#en) and [Português](https://github.com/d4t4x/facebook-cleaner/blob/master/FAQ.md#pt).
 
 ## Run locally and pack extension
 
