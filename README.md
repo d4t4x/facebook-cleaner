@@ -24,7 +24,7 @@ Available in [English](https://github.com/d4t4x/facebook-cleaner/blob/master/FAQ
 
 ## [Privacy Policy](https://github.com/d4t4x/facebook-cleaner/blob/master/PRIVACY_POLICY.md)
 
-Available in [English](https://github.com/d4t4x/facebook-cleaner/blob/master/FAQ.md#en) and [Português](https://github.com/d4t4x/facebook-cleaner/blob/master/FAQ.md#pt).
+Available in [English](https://github.com/d4t4x/facebook-cleaner/blob/master/PRIVACY_POLICY.md#en) and [Português](https://github.com/d4t4x/facebook-cleaner/blob/master/PRIVACY_POLICY.md#pt).
 
 ## Run locally and pack extension
 
