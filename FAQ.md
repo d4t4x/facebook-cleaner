@@ -13,6 +13,9 @@
 #### What other limitations are there?
 The extension can't constantly request the "Why am I seeing this ad"-information from Facebook, so not all sponsored posts will include this.
 
+#### How can I delete my data?
+You can delete your data by removing the extension from your browser. [More info about removing Firefox add-on](https://support.mozilla.org/en-US/kb/disable-or-remove-add-ons). [More info about uninstalling Chrome extension](https://support.google.com/chrome_webstore/answer/2664769?hl=en)
+
 #### I still have questions how do I contact you?
 The best way is to post a new issue [here](https://github.com/d4t4x/facebook-cleaner/issues).
 
