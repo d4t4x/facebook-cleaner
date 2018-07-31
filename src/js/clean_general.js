@@ -83,40 +83,37 @@ module.exports = {
             callback(clickedArr);
         }
     },
-    updateCheckedCategoriesText: function(items) {
+    updateCheckedCategoriesText: function(items, localtext) {
         var checkedCategories = [];
-        if (items['clean-1']) { checkedCategories.push('"Your Interests"') };
-        if (items['clean-2']) { checkedCategories.push('"Advertisers you\'ve interacted with"') };
-        if (items['clean-3']) { checkedCategories.push('"Your Information"') };
+        if (items['clean-1']) { checkedCategories.push(localtext.clean1) };
+        if (items['clean-2']) { checkedCategories.push(localtext.clean2) };
+        if (items['clean-3']) { checkedCategories.push(localtext.clean3) };
         if (checkedCategories.length > 0) {
-            $("#checked-categories").text("You've checked the following sections: ").append($("<span>", { class: "highlight" }).text(_.join(checkedCategories, ", ")));
+            $("#checked-categories").text(localtext.cleanselected).append($("<span>", { class: "highlight" }).text(_.join(checkedCategories, ", ")));
             $("#start-clean").removeClass("low");
         } else {
-            $("#checked-categories").text("You haven't checked any sections below yet.");
+            $("#checked-categories").text(localtext.cleanempty);
             $("#start-clean").addClass("low");
         }
     },
-    restoreOptions: function() { // Restores checkbox state using the preferences stored in chrome.storage.local
-        var self = this;
-        chrome.storage.local.get(['clean-1', 'clean-2', 'clean-3'], function(items) {
-            document.getElementById('clean-1').checked = items['clean-1'];
-            document.getElementById('clean-2').checked = items['clean-2'];
-            document.getElementById('clean-3').checked = items['clean-3'];
-            self.updateCheckedCategoriesText(items);
-        });
+    restoreOptions: function(items, localtext) {
+        document.getElementById('clean-1').checked = items['clean-1'];
+        document.getElementById('clean-2').checked = items['clean-2'];
+        document.getElementById('clean-3').checked = items['clean-3'];
+        this.updateCheckedCategoriesText(items, localtext);
     },
-    addingUIElems: function() {
+    addingUIElems: function(localtext) {
         $("#ads_preferences_desktop_root")
             .append($("<div>", { id: "ads-overlay" }).fadeIn()
-                .append($("<p>", { class: "content" }).text(" // Scroll down and check the boxes at the top of the sections below to remove its content.")
+                .append($("<p>", { class: "content" }).text(localtext.cleandescription)
                     .prepend($("<b>").text("Fuzzify.me")))
                 .append($("<p>", { id: "checked-categories", class: "content" }).hide())
                 .append($("<div>", { class: "content flex" }).hide()
-                    .append($("<button>", { id: "start-clean", class: "button" }).text("Clean checked preferences now"))
-                    .append($("<button>", { id: "stream-link", class: "special" }).text("Stream of collected Sponsored Posts"))
+                    .append($("<button>", { id: "start-clean", class: "button" }).text(localtext.cleanchecked))
+                    .append($("<button>", { id: "stream-link", class: "special" }).text(localtext.adsstream))
                 )
                 .append($("<div>", { class: "content flex" }).hide()
-                    .append($("<label>", { class: "container" }).text("Debug Mode")
+                    .append($("<label>", { class: "container" }).text(localtext.debug)
                         .append($("<input>", { id: "debug", type: "checkbox" }))
                         .append($("<span>", { class: "checkmark" }))
                     )
@@ -127,18 +124,18 @@ module.exports = {
             $(this.getSectionDom(i))
                 .prepend($("<div>", { class: "section-checkbox" }).hide()
                     .append($("<form>", { class: "clean-checkboxes" })
-                        .append($("<label>", { class: "container" }).text("Remove the content from each tab in the below section")
+                        .append($("<label>", { class: "container" }).text(localtext.cleantab)
                             .append($("<input>", { id: "clean-" + (i + 1), type: "checkbox" }))
                             .append($("<span>", { class: "checkmark" }))
                         )
                     )
                 );
             if (i === 0) {
-                $(".section-checkbox").first().append($("<button>", { id: "readd-interests", class: "button" }).text('Re-add all "Removed Interests"'))
+                $(".section-checkbox").first().append($("<button>", { id: "readd-interests", class: "button" }).text(localtext.readdinterests))
             }
         }
     },
-    listenerFunction: function() { // Listens to changes to the checkboxes and updates chrome.storage.local
+    listenerFunction: function(localtext) { // Listens to changes to the checkboxes and updates chrome.storage.local
         var self = this;
         var arr = ['clean-1', 'clean-2', 'clean-3'];
 
@@ -150,7 +147,7 @@ module.exports = {
                 chrome.storage.local.set(obj);
                 chrome.storage.local.get(arr, function(data) {
                     console.info(data);
-                    self.updateCheckedCategoriesText(data)
+                    self.updateCheckedCategoriesText(data, localtext);
                 });
             })
         }

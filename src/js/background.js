@@ -65,7 +65,7 @@ function generalListeners() {
                 });
             case "updateAlarm":
                 chrome.alarms.get("clean-alarm", function(alarm) {
-                    console.log(alarm);
+                    console.log("clean alarm", alarm);
                     chrome.alarms.clear("clean-alarm", function(wasCleared) {
                         console.log("Clean alarm was cleared " + wasCleared);
                         setAlarm();
@@ -114,9 +114,13 @@ function initLocalStorage() {
             chrome.storage.local.set({
                 "options": {
                     notification: 7,
-                    alert: false
+                    lang: "en"
                 }
             })
+            // setAlarm();
+        } else if (data.options.lang === undefined) {
+            data.options.lang = "en";
+            chrome.storage.local.set(data)
         }
     });
 }
@@ -125,10 +129,10 @@ function setAlarm() {
     chrome.storage.local.get(["options"], function(data) {
         var notifInterval = data.options.notification; // days
         db.cleaning.toArray(function(arr) {
-            var lastCleaned = moment.unix(_.last(arr).unix);
+            var lastCleaned = arr.length > 0 ? moment.unix(_.last(arr).unix) : moment();
             var firstAlarmFromNow = lastCleaned.add(notifInterval, "days").valueOf();
             chrome.alarms.create("clean-alarm", { when: firstAlarmFromNow, periodInMinutes: (60 * 24 * notifInterval) });
-            console.log("Clean alarm was created ", firstAlarmFromNow, moment(firstAlarmFromNow).format());
+            console.log("Clean alarm was created ", moment().format(), moment(firstAlarmFromNow).format());
         });
     })
 }
@@ -153,10 +157,11 @@ function initDB(notify) {
 function init() {
     console.log("%c" + greeting, helper.clog.lime);
     initDB(false);
-    setAlarm();
     initLocalStorage();
     generalListeners();
     helper.getPermissions();
 }
 
 init();
+
+// chrome.storage.local.get(null, function(d) {console.log(d)})

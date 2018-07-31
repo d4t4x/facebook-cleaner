@@ -1,5 +1,6 @@
 var general = require("./clean_general.js"),
-    cleanExec = require("./clean_sections.js");
+    cleanExec = require("./clean_sections.js"),
+    text = require("./translations.js");
 
 function startClean() {
     $("#start-clean").fadeTo(0.5);
@@ -32,14 +33,21 @@ function startClean() {
 
 function start() {
     console.log("\n\n\n\nYooo. Ready to clean!! Content page document.readyState: ", document.readyState);
-    general.restoreOptions();
-    general.addingUIElems();
+    // Restores checkbox state using prev preferences
+    var restoredCheckboxes,
+        localtext;
+    chrome.storage.local.get(null, function(data) {
+        restoredCheckboxes = data;
+        localtext = text[data.options.lang]
+        general.addingUIElems(localtext);
+    })
     general.openSections(function() {
         // after opening all the sections show the options/buttons
         setTimeout(function() {
-            $(".section-checkbox").show();
             $(".content").fadeIn();
-            general.listenerFunction();
+            $(".section-checkbox").show();
+            general.restoreOptions(restoredCheckboxes, localtext);
+            general.listenerFunction(localtext);
             $("#readd-interests").click(function() {
                 cleanExec.reAddInterests();
             });

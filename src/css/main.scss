@@ -56,11 +56,11 @@ button:focus {
     left: 0;
     top: 0;
     padding: 10px 20px;
-    width: 250px;
+    width: 280px;
     height: 100vh;
     background-color: $w;
     border-right: 3px solid $purple;
-    overflow: scroll;
+    overflow: auto;
     img {
         width: 26px;
         position: relative;
@@ -74,6 +74,11 @@ button:focus {
     }
     p {
         margin: 15px 0;
+    }
+    #adspref {
+        background-color: $purple;
+        color: #fff;
+        padding: 10px;
     }
     a,
     button {
@@ -104,7 +109,7 @@ button:focus {
 
 #content {
     position: relative;
-    margin: 0 0 0 300px;
+    margin: 0 0 0 320px;
 }
 
 #stream {
@@ -139,7 +144,8 @@ button:focus {
         .name {
             font-weight: bold;
         }
-        .rationale, .rationale-pre {
+        .rationale,
+        .rationale-pre {
             margin: 0;
             padding: 10px;
             background-color: #ddd;

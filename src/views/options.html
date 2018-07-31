@@ -8,22 +8,36 @@
     #options-container {
         padding: 5px 10px;
     }
+
     #cleanNotif {
         width: 4em;
+    }
+
+    #options-container > div {
+        margin: 30px 0;
     }
     </style>
 </head>
 
 <body>
     <div id="options-container">
-        <h3>Options</h3>
-        <p>
-            <input type="number" id="cleanNotif" step="1" min="0" max="100"> Interval (in days) to remind you to clean your preferences
-        </p>
-        <p style="display: none">
-            <input type="checkbox" id="cleanAlert"> Enable alerts to remind you to clean your preferences
-        </p>
-        <button id="updateAlarmOption">Save</button>
+        <h3></h3>
+        <div>
+            <p id="notif-label"><label for="cleanNotif"></label></p>
+            <input type="number" id="cleanNotif" step="1" min="1" max="100" name="cleanNotif">
+        </div>
+        <div>
+            <p id="lang-label"></p>
+            <div>
+                <input type="radio" id="en" name="lang" value="en">
+                <label for="en">English</label>
+            </div>
+            <div>
+                <input type="radio" id="pt" name="lang" value="pt">
+                <label for="pt">Português</label>
+            </div>
+        </div>
+        <button id="updateOption"></button>
     </div>
     <script src="../js/options.js"></script>
 </body>

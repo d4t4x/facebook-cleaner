@@ -16,10 +16,13 @@
 require("../../css/main.scss");
 var helper = require("./me_helpers.js"),
     dbstores = require("../dbstores.js"),
+    translations = require("../translations.js"),
+    localtext,
     db,
     body = $("body");
 
 function showItems(arr) {
+    console.log("all items to show", arr.length, arr);
     var sortedArr = _.sortBy(arr, "unix");
     // timeline start
     var startDate = moment.unix(sortedArr[0].unix);
@@ -85,7 +88,7 @@ function showItems(arr) {
             };
 
             removeDiv.append($("<h4>").text(time.format("MMMM DD, YYYY - HH:mm:ss")))
-                .append($("<p>").text("You have cleaned your preferences and removed: "))
+                .append($("<p>").text(localtext.cleanedlist))
                 .append(removeList);
 
             stream.find("#" + time.year() + time.format("MMMM")).append(removeDiv);
@@ -101,7 +104,7 @@ function showItems(arr) {
             } else {
                 var rationaleT = undefined;
             }
-            var rationalePre = rationaleT ? "This is what Facebook states about \"Why you are seeing this ad\"" : undefined;
+            var rationalePre = rationaleT ? localtext.rationale : undefined;
             stream.find("#" + time.year() + time.format("MMMM"))
                 .append($("<div>", { class: "item", id: "d" + arr[i].unix })
                     .append($("<p>", { class: "name" }).text(name))
@@ -111,8 +114,8 @@ function showItems(arr) {
                     .append($("<p>").text(_.join(arr[i].postDesc, "\n\n")))
                     .append($("<p>").text(_.join(arr[i].origLink, "\n\n")))
                     .append($("<p>").text(_.join(arr[i].origDesc, "\n\n")))
-                    .append($("<p>", {class: "rationale-pre"}).text(rationalePre))
-                    .append($("<p>", {class: "rationale"}).text(rationaleT))
+                    .append($("<p>", { class: "rationale-pre" }).text(rationalePre))
+                    .append($("<p>", { class: "rationale" }).text(rationaleT))
                 );
         }
         if (i === arr.length - 1) {
@@ -122,7 +125,27 @@ function showItems(arr) {
 
 }
 
+function uiText(lang){
+    var text = translations[lang];
+    localtext = text;
+    $("#loading").text(text.loading);
+    $("#description").text(text.description);
+    $("#adspref").text(text.cleanbtn);
+    $("#cleanbtnexpl").text(text.cleanbtnexpl);
+    $("#go-to-options").text(text.optionstitle);
+    $("#about").text(text.abouttitle);
+    $("#faq").text(text.faqtitle);
+    $("#privacy").text(text.privacypolicytitle);
+}
+
 var main = {
+    getLocal: function() {
+        chrome.storage.local.get(null, function(data) {
+            console.info("local storage", data);
+            moment.locale(data.options.lang);
+            uiText(data.options.lang);
+        });
+    },
     initDB: function() {
         db = new Dexie("TargetBlankLocalDB");
         db.version(1).stores(dbstores);
@@ -135,26 +158,26 @@ var main = {
             var cleanArr = [];
             db.cleaning.each(function(d, i) {
                 cleanArr.push(d);
+                var lastTime = moment(_.last(cleanArr).timestamp);
+                var now = moment();
+                var diff = now.diff(lastTime, "days");
+                $("#cleanings").text(diff + localtext.sincecleaned);
+                if (diff > 7) {
+                    $("#cleanings").css("color", "red");
+                };
             });
             db.items.count(function(count) {
                 // check if db has content
                 if (count > 0) {
-                    $("#records").text(count + " record(s) in your database");
+                    $("#records").text(count + localtext.recordsdb);
                     db.items.each(function(d, i) {
                         arr.push(d);
                         if (arr.length === count) {
                             showItems(_.concat(arr, cleanArr));
-                            var lastTime = moment(_.last(cleanArr).timestamp);
-                            var now = moment();
-                            var diff = now.diff(lastTime, "days");
-                            $("#cleanings").text(diff + " day(s) since last cleaning");
-                            if (diff > 7) {
-                                $("#cleanings").css("color", "red");
-                            };
                         }
                     });
                 } else {
-                    $("#stream h1").text("You haven't collected any sponsored posts yet.").removeClass("loading");
+                    $("#stream h1").text(localtext.emptydb).removeClass("loading");
                 }
 
             });
@@ -172,5 +195,6 @@ var main = {
     }
 }
 
+main.getLocal();
 main.initDB();
 main.listener();
