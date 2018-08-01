@@ -22,12 +22,18 @@ var helper = require("./me_helpers.js"),
     totalPosts = 0,
     pagination = 0,
     limit = 20,
-    maxBack = moment("2018-01-01").unix(),
+    maxBack = moment("2018-01-01T00:00:00"),
     body = $("body");
 
-function createYM(startDate) {
+function createYM(firstItem, firstClean) {
     var stream = $("#stream");
     var now = moment().add(0, "months");
+    var startDate = maxBack;
+    if (firstItem < firstClean) {
+        startDate = moment.unix(firstItem);
+    } else {
+        startDate = moment.unix(firstClean);
+    }
     // create divs for each year and month
     var timePassed = now.diff(startDate, 'years');
     for (var i = 0; i < (timePassed + 1); i++) { // +1 for current year
@@ -157,8 +163,8 @@ function getBatch() {
             if (totalPosts > 0) {
                 // last batch go all the way back to fetch all
                 // also in case s.o. cleaned first before collected posts
-                var maxFuture = pagination === Math.ceil(totalPosts/limit) ? moment().unix() : arr[0].unix;
-                var maxPast = pagination === Math.ceil(totalPosts/limit) ? maxBack.unix() : arr[arr.length - 1].unix;
+                var maxFuture = pagination === Math.ceil(totalPosts / limit) ? moment().unix() : arr[0].unix;
+                var maxPast = pagination === Math.ceil(totalPosts / limit) ? maxBack.unix() : arr[arr.length - 1].unix;
                 db.cleaning
                     .filter(function(clean) {
                         return clean.unix < maxFuture && clean.unix >= maxPast;
@@ -191,27 +197,25 @@ var main = {
         });
     },
     initDB: function() {
+        var firstItem, firstClean;
         db = new Dexie("TargetBlankLocalDB");
         db.version(1).stores(dbstores);
         db.open().catch(function(err) {
             console.log("%c[DB][<<] error", helper.clog.magenta);
             console.error(err.stack || err);
-        }).finally(function() {
+        }).then(function() {
             console.log("%c[DB][<<] opened", helper.clog.magenta);
-            getBatch();
             db.items.count(function(count) {
                 totalPosts = count;
                 $("#records").text(count + localtext.recordsdb);
             });
-            db.items.limit(1).toArray(function(first) {
-                db.cleaning.limit(1).toArray(function(firstClean) {
-                    if (first[0].unix < firstClean[0].unix) {
-                        maxBack = moment.unix(first[0].unix);
-                    } else {
-                        maxBack = moment.unix(firstClean[0].unix);
-                    }
-                    createYM(maxBack);
-                });
+            db.cleaning.limit(1).toArray(function(cData) {
+                firstClean = cData[0].unix;
+            });
+            db.items.limit(1).toArray(function(iData) {
+                firstItem = iData[0].unix;
+                createYM(firstItem, firstClean);
+                getBatch();
             });
         });
     },
