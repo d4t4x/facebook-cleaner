@@ -19,19 +19,14 @@ var helper = require("./me_helpers.js"),
     translations = require("../translations.js"),
     localtext,
     db,
+    totalPosts = 0,
+    pagination = 0,
+    limit = 20,
     body = $("body");
 
-function showItems(arr) {
-    console.log("all items to show", arr.length, arr);
-    var sortedArr = _.sortBy(arr, "unix");
-    // timeline start
-    var startDate = moment.unix(sortedArr[0].unix);
-    var now = moment().add(0, "months");
-
+function createYM(startDate) {
     var stream = $("#stream");
-    arr = sortedArr.reverse();
-    // console.log(arr);
-
+    var now = moment().add(0, "months");
     // create divs for each year and month
     var timePassed = now.diff(startDate, 'years');
     for (var i = 0; i < (timePassed + 1); i++) { // +1 for current year
@@ -71,6 +66,19 @@ function showItems(arr) {
             .append($("<h3>").text(y))
             .append(ul)
         );
+    }
+}
+
+function showItems(arr) {
+    console.log("all items to show", arr.length, arr);
+    var sortedArr = _.sortBy(arr, "unix");
+    var stream = $("#stream");
+    arr = sortedArr.reverse();
+
+    if (pagination * limit - totalPosts > 0) {
+        $("#loadmore").fadeOut();
+    } else {
+        $("#loadmore").fadeIn();
     }
 
     // populate and add items
@@ -125,7 +133,7 @@ function showItems(arr) {
 
 }
 
-function uiText(lang){
+function uiText(lang) {
     var text = translations[lang];
     localtext = text;
     $("#loading").text(text.loading);
@@ -136,6 +144,38 @@ function uiText(lang){
     $("#about").text(text.abouttitle);
     $("#faq").text(text.faqtitle);
     $("#privacy").text(text.privacypolicytitle);
+}
+
+function getBatch() {
+    db.items
+        .reverse()
+        .offset(pagination * limit)
+        .limit(limit)
+        .toArray(function(arr) {
+            console.log(arr);
+            if (totalPosts > 0) {
+                var maxFuture = arr.length > 0 ? arr[arr.length - 1].unix : moment.unix();
+                var maxPast = arr.length > 0 ? arr[0].unix : moment().subtract(1, "months").unix();
+                db.cleaning
+                    .filter(function(clean) {
+                        return clean.unix < maxPast && clean.unix >= maxFuture;
+                    })
+                    .toArray(function(cArr) {
+                        showItems(_.concat(arr, cArr));
+                        if (cArr.length > 0) {
+                            var lastTime = moment(_.last(cArr).timestamp);
+                            var now = moment();
+                            var diff = now.diff(lastTime, "days");
+                            $("#cleanings").text(diff + localtext.sincecleaned);
+                            if (diff > 7) {
+                                $("#cleanings").css("color", "red");
+                            };
+                        }
+                    })
+            } else {
+                $("#stream h1").text(localtext.emptydb).removeClass("loading");
+            }
+        });
 }
 
 var main = {
@@ -154,32 +194,14 @@ var main = {
             console.error(err.stack || err);
         }).finally(function() {
             console.log("%c[DB][<<] opened", helper.clog.magenta);
-            var arr = [];
-            var cleanArr = [];
-            db.cleaning.each(function(d, i) {
-                cleanArr.push(d);
-                var lastTime = moment(_.last(cleanArr).timestamp);
-                var now = moment();
-                var diff = now.diff(lastTime, "days");
-                $("#cleanings").text(diff + localtext.sincecleaned);
-                if (diff > 7) {
-                    $("#cleanings").css("color", "red");
-                };
-            });
+            getBatch();
             db.items.count(function(count) {
-                // check if db has content
-                if (count > 0) {
-                    $("#records").text(count + localtext.recordsdb);
-                    db.items.each(function(d, i) {
-                        arr.push(d);
-                        if (arr.length === count) {
-                            showItems(_.concat(arr, cleanArr));
-                        }
-                    });
-                } else {
-                    $("#stream h1").text(localtext.emptydb).removeClass("loading");
-                }
-
+                totalPosts = count;
+                $("#records").text(count + localtext.recordsdb);
+            });
+            db.items.limit(1).toArray(function(last) {
+                // console.log(last[0]);
+                createYM(moment.unix(last[0].unix));
             });
         });
     },
@@ -191,6 +213,10 @@ var main = {
             } else {
                 window.open(chrome.runtime.getURL('options.html'));
             }
+        });
+        $("#loadmore").click(function() {
+            pagination++;
+            getBatch();
         });
     }
 }

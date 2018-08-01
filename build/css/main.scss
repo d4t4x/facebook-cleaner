@@ -199,6 +199,16 @@ button:focus {
     }
 }
 
+.loadmore-container {
+    text-align: center;
+    button {
+        background-color: $purple;
+        color: #fff;
+        padding: 10px;
+        margin: 30px 0;
+    }
+}
+
 #options-container {
     width: 500px;
     position: relative;

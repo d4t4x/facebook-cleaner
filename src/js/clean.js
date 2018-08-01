@@ -3,6 +3,7 @@ var general = require("./clean_general.js"),
     text = require("./translations.js");
 
 function startClean() {
+    console.log("start cleaning");
     $("#start-clean").fadeTo(0.5);
     chrome.storage.local.get(['clean-1', 'clean-2', 'clean-3'], function(data) {
         console.log(data);
@@ -40,7 +41,11 @@ function start() {
         restoredCheckboxes = data;
         localtext = text[data.options.lang]
         general.addingUIElems(localtext);
-    })
+        $("#start-clean").click(startClean);
+        $("#stream-link").click(function() {
+            chrome.runtime.sendMessage({ type: "openStream" });
+        });
+    });
     general.openSections(function() {
         // after opening all the sections show the options/buttons
         setTimeout(function() {
@@ -52,10 +57,6 @@ function start() {
                 cleanExec.reAddInterests();
             });
         }, 1500);
-        $("#start-clean").click(startClean);
-        $("#stream-link").click(function() {
-            chrome.runtime.sendMessage({ type: "openStream" });
-        });
     });
 };
 
