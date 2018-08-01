@@ -1,6 +1,6 @@
 {
   "name": "fm_dev",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Dev environment for Fuzzify.me",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "dexie": "^2.0.4",
-    "jquery": "^3.1.1",
+    "jquery": "^3.3.1",
     "lodash": "^4.17.10",
     "moment": "^2.22.2"
   },
