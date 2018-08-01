@@ -22,6 +22,7 @@ var helper = require("./me_helpers.js"),
     totalPosts = 0,
     pagination = 0,
     limit = 20,
+    maxBack = moment("2018-01-01").unix(),
     body = $("body");
 
 function createYM(startDate) {
@@ -152,15 +153,18 @@ function getBatch() {
         .offset(pagination * limit)
         .limit(limit)
         .toArray(function(arr) {
-            console.log(arr);
+            console.log("posts", arr);
             if (totalPosts > 0) {
-                var maxFuture = arr.length > 0 ? arr[arr.length - 1].unix : moment.unix();
-                var maxPast = arr.length > 0 ? arr[0].unix : moment().subtract(1, "months").unix();
+                // last batch go all the way back to fetch all
+                // also in case s.o. cleaned first before collected posts
+                var maxFuture = pagination === Math.ceil(totalPosts/limit) ? moment().unix() : arr[0].unix;
+                var maxPast = pagination === Math.ceil(totalPosts/limit) ? maxBack.unix() : arr[arr.length - 1].unix;
                 db.cleaning
                     .filter(function(clean) {
-                        return clean.unix < maxPast && clean.unix >= maxFuture;
+                        return clean.unix < maxFuture && clean.unix >= maxPast;
                     })
                     .toArray(function(cArr) {
+                        console.log("cleaning", cArr);
                         showItems(_.concat(arr, cArr));
                         if (cArr.length > 0) {
                             var lastTime = moment(_.last(cArr).timestamp);
@@ -199,9 +203,15 @@ var main = {
                 totalPosts = count;
                 $("#records").text(count + localtext.recordsdb);
             });
-            db.items.limit(1).toArray(function(last) {
-                // console.log(last[0]);
-                createYM(moment.unix(last[0].unix));
+            db.items.limit(1).toArray(function(first) {
+                db.cleaning.limit(1).toArray(function(firstClean) {
+                    if (first[0].unix < firstClean[0].unix) {
+                        maxBack = moment.unix(first[0].unix);
+                    } else {
+                        maxBack = moment.unix(firstClean[0].unix);
+                    }
+                    createYM(maxBack);
+                });
             });
         });
     },
