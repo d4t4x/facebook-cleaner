@@ -29,6 +29,7 @@ function createYM(firstItem, firstClean) {
     var stream = $("#stream");
     var now = moment().add(0, "months");
     var startDate = maxBack;
+    console.log("create containers", startDate, firstItem, firstClean);
     if (firstItem < firstClean) {
         startDate = moment.unix(firstItem);
     } else {
@@ -210,10 +211,10 @@ var main = {
                 $("#records").text(count + localtext.recordsdb);
             });
             db.cleaning.limit(1).toArray(function(cData) {
-                firstClean = cData[0].unix;
+                firstClean = cData.length > 0 ? cData[0].unix : moment().unix();
             });
             db.items.limit(1).toArray(function(iData) {
-                firstItem = iData[0].unix;
+                firstItem = iData.length > 0 ? iData[0].unix : moment().unix();
                 createYM(firstItem, firstClean);
                 getBatch();
             });

@@ -56,8 +56,9 @@ button:focus {
     left: 0;
     top: 0;
     padding: 10px 20px;
-    width: 280px;
+    width: 300px;
     height: 100vh;
+    box-sizing: border-box;
     background-color: $w;
     border-right: 3px solid $purple;
     overflow: auto;
@@ -95,9 +96,10 @@ button:focus {
 
 #toc {
     ul {
-        width: 150px;
+        width: 180px;
         list-style: none;
         padding: 0;
+        margin: 10px 0 20px;
         li {
             padding: 0;
         }
@@ -204,6 +206,7 @@ button:focus {
     button {
         background-color: $purple;
         color: #fff;
+        border: 0px;
         padding: 10px;
         margin: 30px 0;
     }
