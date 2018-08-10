@@ -33,7 +33,7 @@ function startClean() {
 }
 
 function start() {
-    console.log("\n\n\n\nYooo. Ready to clean!! Content page document.readyState: ", document.readyState);
+    console.log("%cYooo. Ready to clean!!", "color: #c667c1");
     // Restores checkbox state using prev preferences
     var restoredCheckboxes,
         localtext;
@@ -60,8 +60,15 @@ function start() {
     });
 };
 
-document.onreadystatechange = function() {
+console.log("%chi", "color: #c667c1");
+
+(function check() {
+    console.log("%cContent page document.readyState: " + document.readyState, "color: #c667c1");
     if (document.readyState === "complete") {
         start();
+    } else {
+        // document.onreadystatechange listener is not always called
+        // check every second instead
+        setTimeout(check, 1000);
     }
-}
+})();

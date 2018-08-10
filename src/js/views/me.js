@@ -184,7 +184,8 @@ function getBatch() {
                         }
                     })
             } else {
-                $("#stream h1").text(localtext.emptydb).removeClass("loading");
+                $("#loading").text(localtext.emptydb).removeClass("loading");
+                $(".year").hide();
             }
         });
 }
