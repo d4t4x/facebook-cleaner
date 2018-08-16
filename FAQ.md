@@ -22,7 +22,7 @@ You can delete your data by removing the extension from your browser.
 [More info about uninstalling Chrome extension.](https://support.google.com/chrome_webstore/answer/2664769?hl=en)
 
 #### I still have questions how do I contact you?
-The best way is to post a new issue [here](https://github.com/d4t4x/facebook-cleaner/issues).
+The best way is to post a new issue [here](https://github.com/d4t4x/facebook-cleaner/issues). If you don't have a github account, you can email fuzzify@d4t4x.net.
 
 
 <br>
