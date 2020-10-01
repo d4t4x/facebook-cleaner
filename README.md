@@ -3,6 +3,7 @@
 A browser extension that helps you understand how advertisers target you on Facebook. With one click, the tool automatically runs a housecleaning, denying advertisers access to all the categories Facebook is constantly generating about you. In the Ads Stream you can keep track of what categories have been cleared out and what targeted ads you're seeing over time.
 
 Built for both Firefox & Chrome.
+It can also be installed on browsers bases on Chromium (eg. Microsoft Edge)
 
 [Install for Firefox](https://addons.mozilla.org/en-US/firefox/addon/fuzzify-me/)
 
